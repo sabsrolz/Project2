@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-
-=======
 DROP DATABASE IF EXISTS StockDB;
 CREATE DATABASE StockDB;
 USE StockDB;
@@ -12,7 +9,6 @@ CREATE TABLE users (
     money INT NOT NULL,
 	PRIMARY KEY(ID)
 );
->>>>>>> 5c476079c79a0a0195242fcc4ebf3b5f6b2b899e
 
 CREATE TABLE transactions (
 	id INT NOT NULL,
