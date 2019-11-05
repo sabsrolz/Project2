@@ -57,6 +57,7 @@ io.on('connection', function (socket) {
     console.log(data);
   });
 });
+
 // Starting the server, syncing our models ------------------------------------/
 db.sequelize.sync(syncOptions).then(function () {
   app.listen(PORT, function () {
