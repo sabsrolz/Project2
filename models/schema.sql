@@ -1,11 +1,2 @@
-DROP DATABASE IF EXISTS StockDB;
-CREATE DATABASE StockDB;
-USE StockDB(
-    id INT NOT NULL AUTO_INCREMENT,
-    username VARCHAR(255)NOT NULL,
-    password VARCHAR(255)NOT NULL,
-    portfolio VARCHAR(255)NOT NULL,
-    PRIMARY KEY(username)
-)
 
 
