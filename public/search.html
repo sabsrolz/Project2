@@ -19,7 +19,7 @@
   </head>
   <body>
     <header>
-      <nav class="indigo darken-3 z-depth-5">
+      <nav class="indigo darken-3 z-depth-3">
         <div class="container">
           <div class="nav-wrapper">
             <a href="#!" class="brand-logo">>Logo/title</a>
@@ -97,19 +97,28 @@
               Price:
             </h5>
             <form id="transactionForm">
-              <select name="transactionType">
-                <option name="transactionType" value="buy">Buy</option>
-                <option name="transactionType" value="sell">Sell</option>
-              </select>
-              <label>Make a transaction:</label>
-              <div class="input-field col s12">
-                <input
-                  required
-                  class="validate"
-                  type="number"
-                  id="transactionAmount"
-                />
-                <label>Choose an Amount:</label>
+              <div class="container">
+                <select name="transactionType">
+                  <option name="transactionType" value="buy">Buy</option>
+                  <option name="transactionType" value="sell">Sell</option>
+                </select>
+                <label>Make a transaction:</label>
+                <div class="input-field col s12">
+                  <input
+                    required
+                    class="validate"
+                    type="number"
+                    id="transactionAmount"
+                  />
+                  <label>Choose an Amount:</label>
+                </div>
+                <button
+                  id="transactionSubmitBtn"
+                  type="submit"
+                  class="btn blue-grey darken-3 waves-effect waves-light"
+                >
+                  <span>Go</span>
+                </button>
               </div>
             </form>
           </div>
@@ -122,7 +131,7 @@
       </div>
     </footer>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-    <script src="./js/script.js"></script>
+    <script src="./js/searchScript.js"></script>
     <script src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script>
   </body>
 </html>
