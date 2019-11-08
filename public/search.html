@@ -63,27 +63,37 @@
             </div>
           </div>
         </div>
-
-        <form id="tickerForm">
-          <div class="input-field">
-            <input class="validate" required type="text" id="tickerSearch" />
-            <label for="tickerSearch">Stock Ticker</label>
-            <button
-              id="tickerSubmitBtn"
-              type="submit"
-              class="btn blue-grey darken-3 waves-effect waves-light"
-            >
-              <span>search</span>
-            </button>
+        <div class="card hoverable">
+          <div class="container">
+            <h3>Search for a stock</h3>
+            <form id="tickerForm">
+              <div class="input-field">
+                <input
+                  class="validate"
+                  required
+                  type="text"
+                  id="tickerSearch"
+                />
+                <label for="tickerSearch">Stock Ticker</label>
+                <button
+                  id="tickerSubmitBtn"
+                  type="submit"
+                  class="btn blue-grey darken-3 waves-effect waves-light"
+                >
+                  <span>search</span>
+                </button>
+                <br /><br />
+              </div>
+            </form>
           </div>
-        </form>
+        </div>
         <div
           id="chartContainer"
-          class="card hide"
+          class="card hoverable hide"
           style="height: 300px; width: 100%;"
         ></div>
         <div class="row">
-          <div id="stockInfo" class="card col s12 hide">
+          <div id="stockInfo" class="card hoverable col s12 hide">
             <h5>
               (Stock Info Here):
             </h5>
@@ -98,11 +108,13 @@
             </h5>
             <form id="transactionForm">
               <div class="container">
-                <select name="transactionType">
-                  <option name="transactionType" value="buy">Buy</option>
-                  <option name="transactionType" value="sell">Sell</option>
-                </select>
-                <label>Make a transaction:</label>
+                <div class="input-field">
+                  <select name="transactionType">
+                    <option name="transactionType" value="buy">Buy</option>
+                    <option name="transactionType" value="sell">Sell</option>
+                  </select>
+                  <label for="transactionType">Make a transaction:</label>
+                </div>
                 <div class="input-field col s12">
                   <input
                     required
@@ -119,6 +131,7 @@
                 >
                   <span>Go</span>
                 </button>
+                <br /><br />
               </div>
             </form>
           </div>
