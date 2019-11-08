@@ -1,23 +1,136 @@
 var db = require("../models");
+const axios = require("axios");
+const moment = require("moment");
 
 module.exports = function(app) {
-  // Get all examples
-  app.get("/api/examples", function(req, res) {
-    db.Example.findAll({}).then(function(dbExamples) {
-      res.json(dbExamples);
-    });
+  //GET Route that will display current price of stock to user
+  app.get("/api/stock", function(req, res) {
+    //let portfolio_sabs = [];
+    let ticker;
+    let num_shares;
+    let total_price = 0;
+    let currentTime = moment()
+    .add(1, "hours")
+    .subtract(1, "minutes")
+    .format("YYYY-MM-DD HH:mm:00");
+    console.log(currentTime);
+    function searchTicker(company) {
+      const api_key = "8HGF9L0ALM5LPNX5"; //send to env
+      const query_ticker = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${company}&apikey=${api_key}`;
+      axios.get(query_ticker).then(function(response) {
+        ticker = response["bestMatches"][0]["1. symbol"];
+        const queryURLIntraday = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${ticker}&interval=1min&apikey=8HGF9L0ALM5LPNX5`;
+        axios.get(queryURLIntraday).then(function(response) {
+          close_minutely =
+            response["Time Series (1min)"][currentTime]["4. close"];
+          total_price = num_shares * close_minutely;
+          console.log(total_price);
+        });
+        const transaction_object = {
+          companyName: company,
+          ticker: ticker,
+          currentStockPrice: close_minutely
+        };
+        res.json(transaction_object);
+      });
+    }
   });
 
-  // Create a new example
-  app.post("/api/examples", function(req, res) {
+  
+  //POST ROUTE when user purchases/sells # of shares at $ price
+  app.post("/api/transaction/user", function(req, res) {
+    //req.body = {numShares, buy/sell}
+    const numShares = req.body.numShares;
+    const transactionType = req.body.transactionType;
+    const currentPrice = req.body.currentPrice;
+    const companyName = req.body.companyName;
+    const ticker = req.body.ticker;
+    const userId = req.params.user;
+    transTotal = numShares*currentPrice;
+    const updatedFunds;
+    let transaction;
+    db.user.findAll({
+      where: {
+        user: userId
+      }
+    }).then(function(result, err) {
+      if (err) throw err;
+      // res.json(result);
+      // console.log(result);
+    const currentFunds = result.fundsAvailable;
+    if (transactionType === "buy"){
+      if (currentFunds >= transTotal){
+        //call put api to update current funds of user
+        transaction = {
+          companyName: companyName,
+          ticker: ticker,
+          userId: userId,
+          sharesTraded: numShares,
+          transactionPrice: transTotal
+        }
+        db.transactions.create({
+          transaction
+        }).then(function(err, result){
+          if (err) throw (err);
+          console.log(result)
+          console.log("transaction was successfully recorded")
+        })
+      }else{
+        console.log("you dont have enough funds to complete transaction")
+      }
+    }
+    else { 
+      db.transactions_table.findAndCountAll({
+        include: [{ticker:ticker}], 
+        where:{
+          userId: userId
+        }
+      }).then(function(err, result){
+        if (err) throw err;
+        console.log(result)
+        if (numShares >= result.count){
+          transaction = {
+            companyName: companyName,
+            ticker: ticker,
+            userId: userId,
+            sharesTraded: numShares,
+            transactionPrice: transTotal
+          }
+          //call put api to update current funds of user
+          db.transactions.create({
+            transaction
+          }).then(function(err, result){
+            if (err) throw (err);
+            console.log(result)
+            console.log("transaction was successfully recorded")
+          })
+        }
+        else {
+          console.log("Insufficient shares to complete transaction")
+        }
+      })
+    }
+    
+  });
+   
+
+    //if sell: 
+    //get from transactions count of ticker selected
+    //if amount is met, then update funds available PUT + 
+    //insert a new transaction into transactions table
+
     db.Example.create(req.body).then(function(dbExample) {
       res.json(dbExample);
     });
   });
 
+  //write a PUT route and wrap inside function
+
   // Delete an example by id
   app.delete("/api/examples/:id", function(req, res) {
-    db.Example.destroy({ where: { id: req.params.id } }).then(function(dbExample) {
+    db.Example.destroy({ where: { id: req.params.id } }).then(function(
+      dbExample
+    ) {
       res.json(dbExample);
     });
   });
