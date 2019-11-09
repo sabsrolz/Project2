@@ -1,66 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <link
-      href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
-    />
-    <link rel="stylesheet" href="./styles/style.css" />
-    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ticker Search</title>
-  </head>
-  <body class="blue-grey lighten-4">
-    <header>
-      <nav class="indigo darken-3 z-depth-3">
-        <div class="container">
-          <div class="nav-wrapper">
-            <a href="#!" class="brand-logo">>Logo/title</a>
-            <a href="#" data-target="mobile-navbar" class="sidenav-trigger"
-              ><i class="material-icons">menu</i></a
-            >
-            <ul class="right hide-on-med-and-down">
-              <li><a href="#">#</a></li>
-              <li><a href="#">#</a></li>
-              <li><a href="#">#</a></li>
-              <li><a href="#">#</a></li>
-            </ul>
-          </div>
-        </div>
-      </nav>
 
-      <ul class="sidenav blue-grey darken-1" id="mobile-navbar">
-        <div class="container">
-          <li><a href="#">#</a></li>
-          <li><a href="#">#</a></li>
-          <li><a href="#">#</a></li>
-          <li><a href="#">#</a></li>
-        </div>
-      </ul>
-    </header>
-    <main>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" />
+  <link rel="stylesheet" href="./styles/style.css" />
+  <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ticker Search</title>
+</head>
+
+<body class="blue-grey lighten-4">
+  <header>
+    <nav class="indigo darken-3 z-depth-3">
       <div class="container">
-        <div class="row">
-          <div class="col s6 offset-s4">
-            <div class="hide-on-med-and-down">
-              <img
-                class="responsive-img"
-                src="https://cdn.frankerfacez.com/emoticon/218530/4"
-                alt=""
-              />
-              <img
-                class="responsive-img"
-                src="https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/lg/57/chart-with-upwards-trend_1f4c8.png"
-                alt=""
-              />
-            </div>
+        <div class="nav-wrapper">
+          <a href="#!" class="brand-logo">>Logo/title</a>
+          <a href="#" data-target="mobile-navbar" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+          <ul class="right hide-on-med-and-down">
+            <li><a href="#">#</a></li>
+            <li><a href="#">#</a></li>
+            <li><a href="#">#</a></li>
+            <li><a href="#">#</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <ul class="sidenav blue-grey darken-1" id="mobile-navbar">
+      <div class="container">
+        <li><a href="#">#</a></li>
+        <li><a href="#">#</a></li>
+        <li><a href="#">#</a></li>
+        <li><a href="#">#</a></li>
+      </div>
+    </ul>
+  </header>
+  <main>
+    <div class="container">
+      <div class="row">
+        <div class="col s6 offset-s4">
+          <div class="hide-on-med-and-down">
+            <img class="responsive-img" src="https://cdn.frankerfacez.com/emoticon/218530/4" alt="" />
+            <img class="responsive-img"
+              src="https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/lg/57/chart-with-upwards-trend_1f4c8.png"
+              alt="" />
           </div>
         </div>
         <div class="card hoverable">
@@ -78,17 +66,12 @@
                   <label for="loginEmail">Email</label>
                 </div>
               </div>
+            </div>
 
-              <div class="row">
-                <div class="input-field">
-                  <input
-                    id="loginPass"
-                    required
-                    type="password"
-                    class="validate"
-                  />
-                  <label for="loginPass">Password</label>
-                </div>
+            <div class="row">
+              <div class="input-field">
+                <input id="loginPass" required type="password" class="validate" />
+                <label for="loginPass">Password</label>
               </div>
               <button
                 id="loginSubmitBtn"
@@ -180,13 +163,16 @@
           </div>
         </div>
       </div>
-    </main>
-    <footer class="page-footer indigo darken-3">
-      <div class="container">
-        <p>Footer Content</p>
-      </div>
-    </footer>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-    <script src="./js/login.js"></script>
-  </body>
+    </div>
+  </main>
+  <footer class="page-footer indigo darken-3">
+    <div class="container">
+      <p>Footer Content</p>
+    </div>
+  </footer>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script src="./js/login.js"></script>
+  <script src="./js/chat.js"></script>
+</body>
+
 </html>
