@@ -1,11 +1,13 @@
-var db = require("../models");
-const axios = require("axios");
-const moment = require("moment");
+// var db = require("../models");
+// const axios = require("axios");
+// const moment = require("moment");
+console.log("api routes connected");
 
 module.exports = function(app) {
   //GET Route that will display current price of stock to user
-  app.get("/api/stock", function(req, res) {
-    //let portfolio_sabs = [];
+  app.get("/api/", function(req, res) {
+    // // like req.params --api/stock/:company
+    console.log("route got hit");
     let ticker;
     let num_shares;
     let total_price = 0;
@@ -34,8 +36,13 @@ module.exports = function(app) {
         res.json(transaction_object);
       });
     }
+    let test = { test1: 1, test2: 2 };
+    res.json(test);
   });
 
+  app.get("/api/test", function(req, res) {
+    res.send("ok");
+  });
   //POST ROUTE when user purchases/sells # of shares at $ price
   app.post("/api/transaction/:user", function(req, res) {
     //req.body = {numShares, buy/sell}
@@ -133,3 +140,12 @@ module.exports = function(app) {
     });
   }
 };
+
+//hn_YvbyFGxzX8BoATAmf
+//0ebb6649b6ff470299dc8fa3faed3116 (news)
+//https://newsapi.org/v2/top-headlines?q=microsoft&apiKey=0ebb6649b6ff470299dc8fa3faed3116
+
+//standard deviation - volatility
+//1, 3, 5, 10 yrs
+//sharpe ratio
+//max drawdown
