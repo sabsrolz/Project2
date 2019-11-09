@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 // Make connection
 var socket = io.connect("http://localhost:8080");
 
@@ -33,4 +31,3 @@ socket.on("chat", function(data) {
 socket.on("typing", function(data) {
   feedback.innerHTML = "<p><em>" + data + " is typing a message...</em></p>";
 });
->>>>>>> 4be86e058b8aad8cd911d0afa7274630ad2b6776
