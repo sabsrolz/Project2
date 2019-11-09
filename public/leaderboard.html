@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+<<<<<<< HEAD
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -14,10 +15,25 @@
     />
     <link rel="stylesheet" href="./styles/style.css" />
     <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ticker Search</title>
   </head>
 
+=======
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" />
+  <link rel="stylesheet" href="./styles/style.css" />
+  <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ticker Search</title>
+</head>
+>>>>>>> 4be86e058b8aad8cd911d0afa7274630ad2b6776
   <body class="blue-grey lighten-4">
     <header>
       <nav class="indigo darken-3 z-depth-3">
@@ -28,7 +44,7 @@
               ><i class="material-icons">menu</i></a
             >
             <ul class="right hide-on-med-and-down">
-              <li><a href="/">Home</a></li>
+              <li><a href="#">#</a></li>
               <li><a href="#">#</a></li>
               <li><a href="#">#</a></li>
               <li><a href="#">#</a></li>
@@ -87,22 +103,97 @@
       <div class="container">
         <div class="row"></div>
       </div>
+<<<<<<< HEAD
     </main>
-    <div id="mario-chat">
-      <div id="chat-window">
-        <div id="output"></div>
+    <div id="container">
+      <div id="messageArea" class="row">
+        <div class="col-md-4">
+          <div class="well">
+            <h3>Online Users</h3>
+            <ul class="list-group" id="users"></ul>
+          </div>
+        </div>
+        <div class="col-md-8">
+          <div class="chat" id="chat"></div>
+          <form id="messageForm">
+            <div class="form-group">
+              <label>Enter Message</label>
+              <textarea class="form-control" id="message"></textarea>
+              <br />
+              <input
+                type="submit"
+                class="btn btn-primary"
+                value="Send Message"
+              />
+            </div>
+          </form>
+        </div>
       </div>
-      <input id="handle" type="text" placeholder="Handle" />
-      <input id="message" type="text" placeholder="Message" />
-      <button id="send">Send</button>
     </div>
 
-    <footer class="page-footer indigo darken-3">
+    <footer class=" page-footer indigo darken-3">
       <div class="container">
         <p>Footer Content</p>
       </div>
     </footer>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="./js/boardScript.js"></script>
+    <script>
+      $(function() {
+        const socket = io.connect();
+        const $messageForm = $("#messageForm");
+        const $message = $("#message");
+        const $chat = $("#chat");
+
+        $messageForm.submit(function(e) {
+          e.preventDefault();
+          socket.emit("send message", $message.val());
+          $message.val("");
+        });
+
+        socket.io("new message", function(data) {
+          $chat.append('<div class="well>' + data.msg + "</div>");
+        });
+      });
+    </script>
   </body>
+=======
+    </ul>
+  </header>
+  <main>
+    <div class="container">
+      <div class="row"></div>
+    </div>
+  </main>
+  <div id="container">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="well">
+          <h3>Online Users</h3>
+          <ul class="list-group" id="users"></ul>
+        </div>
+      </div>
+      <div class="col-md-8">
+        <div class="chat" id="chat"></div>
+        <form id="messageForm">
+          <div class="form-group">
+            <label>Enter Message</label>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <footer class="page-footer indigo darken-3">
+    <div class="container">
+      <p>Footer Content</p>
+    </div>
+  </footer>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script src="./js/boardScript.js"></script>
+  <script src="./js/chat.js"></script>
+</body>
+
+
+>>>>>>> 4be86e058b8aad8cd911d0afa7274630ad2b6776
 </html>
