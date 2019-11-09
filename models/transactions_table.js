@@ -1,10 +1,10 @@
 module.exports = function(sequelize, DataTypes) {
-  var transactions = sequelize.define("transactions", {
+  var Transactions = sequelize.define("Transactions", {
     companyName: DataTypes.STRING,
     ticker: DataTypes.STRING,
     userId: DataTypes.STRING,
     sharesTraded: DataTypes.INTEGER,
     transactionPrice: DataTypes.DECIMAL
   });
-  return transactions;
+  return Transactions;
 };

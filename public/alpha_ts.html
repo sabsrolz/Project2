@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
+
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
+  </head>
+  <body>
+    <div id="ts-output">TS OUTPUT</div>
+    <script>
+      // let portfolio_sabs = [];
+      // let ticker;
+      // let num_shares = 5;
+      // let total_price = 0;
+
+      // function searchTicker(company) {
+      //   const query_ticker = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${company}&apikey=8HGF9L0ALM5LPNX5`;
+      //   $.ajax({
+      //     url: query_ticker,
+      //     method: "GET"
+      //   }).then(function(response) {
+      //     ticker = response["bestMatches"][0]["1. symbol"];
+      //     const queryURLIntraday = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${ticker}&interval=1min&apikey=8HGF9L0ALM5LPNX5`;
+      //     $.ajax({
+      //       url: queryURLIntraday,
+      //       method: "GET"
+      //     }).then(function(response) {
+      //       console.log(response);
+      //       let currentTime = moment()
+      //         .add(1, "hours")
+      //         .subtract(1, "minutes")
+      //         .format("YYYY-MM-DD HH:mm:00");
+
+      //       console.log(currentTime);
+      //       close_minutely =
+      //         response["Time Series (1min)"][currentTime]["4. close"];
+      //       total_price = num_shares * close_minutely;
+      //       console.log(total_price);
+      //     });
+      //     portfolio_sabs = `${company},${ticker},${num_shares}`;
+      //     console.log(portfolio_sabs);
+      //     //add
+      //   });
+      // }
+
+      // const queryURLDaily =
+      //   "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=MSFT&apikey=8HGF9L0ALM5LPNX5";
+      // const query_quote =
+      //   "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=MSFT&apikey=8HGF9L0ALM5LPNX5";
+
+      // searchTicker("Fitbit");
+      $.ajax({
+        url: "api/test",
+        method: "GET"
+      }).then(function(response) {
+        console.log(response);
+      });
+    </script>
+  </body>
+</html>

@@ -1,18 +1,20 @@
-var db = require("../models");
-const axios = require("axios");
-const moment = require("moment");
+// var db = require("../models");
+// const axios = require("axios");
+// const moment = require("moment");
+console.log("api routes connected");
 
 module.exports = function(app) {
   //GET Route that will display current price of stock to user
-  app.get("/api/stock", function(req, res) {
-    //let portfolio_sabs = [];
+  app.get("/api/", function(req, res) {
+    // // like req.params --api/stock/:company
+    console.log("route got hit");
     let ticker;
     let num_shares;
     let total_price = 0;
     let currentTime = moment()
-    .add(1, "hours")
-    .subtract(1, "minutes")
-    .format("YYYY-MM-DD HH:mm:00");
+      .add(1, "hours")
+      .subtract(1, "minutes")
+      .format("YYYY-MM-DD HH:mm:00");
     console.log(currentTime);
     function searchTicker(company) {
       const api_key = "8HGF9L0ALM5LPNX5"; //send to env
@@ -34,11 +36,15 @@ module.exports = function(app) {
         res.json(transaction_object);
       });
     }
+    let test = { test1: 1, test2: 2 };
+    res.json(test);
   });
 
-  
+  app.get("/api/test", function(req, res) {
+    res.send("ok");
+  });
   //POST ROUTE when user purchases/sells # of shares at $ price
-  app.post("/api/transaction/user", function(req, res) {
+  app.post("/api/transaction/:user", function(req, res) {
     //req.body = {numShares, buy/sell}
     const numShares = req.body.numShares;
     const transactionType = req.body.transactionType;
@@ -46,92 +52,100 @@ module.exports = function(app) {
     const companyName = req.body.companyName;
     const ticker = req.body.ticker;
     const userId = req.params.user;
-    transTotal = numShares*currentPrice;
-    const updatedFunds;
+    transTotal = numShares * currentPrice;
     let transaction;
-    db.user.findAll({
-      where: {
-        user: userId
-      }
-    }).then(function(result, err) {
-      if (err) throw err;
-      // res.json(result);
-      // console.log(result);
-    const currentFunds = result.fundsAvailable;
-    if (transactionType === "buy"){
-      if (currentFunds >= transTotal){
-        //call put api to update current funds of user
-        transaction = {
-          companyName: companyName,
-          ticker: ticker,
-          userId: userId,
-          sharesTraded: numShares,
-          transactionPrice: transTotal
-        }
-        db.transactions.create({
-          transaction
-        }).then(function(err, result){
-          if (err) throw (err);
-          console.log(result)
-          console.log("transaction was successfully recorded")
-        })
-      }else{
-        console.log("you dont have enough funds to complete transaction")
-      }
-    }
-    else { 
-      db.transactions_table.findAndCountAll({
-        include: [{ticker:ticker}], 
-        where:{
-          userId: userId
-        }
-      }).then(function(err, result){
-        if (err) throw err;
-        console.log(result)
-        if (numShares >= result.count){
-          transaction = {
-            companyName: companyName,
-            ticker: ticker,
-            userId: userId,
-            sharesTraded: numShares,
-            transactionPrice: transTotal
-          }
-          //call put api to update current funds of user
-          db.transactions.create({
-            transaction
-          }).then(function(err, result){
-            if (err) throw (err);
-            console.log(result)
-            console.log("transaction was successfully recorded")
-          })
-        }
-        else {
-          console.log("Insufficient shares to complete transaction")
+    let updatedFunds;
+    db.user
+      .findAll({
+        where: {
+          user: userId
         }
       })
-    }
-    
+      .then(function(result, err) {
+        if (err) throw err;
+        // res.json(result);
+        // console.log(result);
+        const currentFunds = result.fundsAvailable;
+        if (transactionType === "buy") {
+          if (currentFunds >= transTotal) {
+            updatedFunds = currentFunds - transTotal;
+            updateUser(updatedFunds);
+            transaction = {
+              companyName: companyName,
+              ticker: ticker,
+              userId: userId,
+              sharesTraded: numShares,
+              transactionPrice: transTotal
+            };
+            db.transactions
+              .create({
+                transaction
+              })
+              .then(function(err, result) {
+                if (err) throw err;
+                console.log(result);
+                console.log("transaction was successfully recorded");
+              });
+          } else {
+            console.log("you dont have enough funds to complete transaction");
+          }
+        } else {
+          db.transactions_table
+            .findAndCountAll({
+              include: [{ ticker: ticker }],
+              where: {
+                userId: userId
+              }
+            })
+            .then(function(err, result) {
+              if (err) throw err;
+              console.log(result);
+              if (numShares >= result.count) {
+                updatedFunds = currentFunds + transTotal;
+                transaction = {
+                  companyName: companyName,
+                  ticker: ticker,
+                  userId: userId,
+                  sharesTraded: numShares,
+                  transactionPrice: transTotal
+                };
+                updatedFunds(updatedFunds);
+                db.transactions
+                  .create({
+                    transaction
+                  })
+                  .then(function(err, result) {
+                    if (err) throw err;
+                    console.log(result);
+                    console.log("transaction was successfully recorded");
+                  });
+              } else {
+                console.log("Insufficient shares to complete transaction");
+              }
+            });
+        }
+      });
   });
-   
 
-    //if sell: 
-    //get from transactions count of ticker selected
-    //if amount is met, then update funds available PUT + 
-    //insert a new transaction into transactions table
-
-    db.Example.create(req.body).then(function(dbExample) {
-      res.json(dbExample);
+  //put calls
+  function updateUser(x) {
+    app.put("/api/transaction/:user", function(req, res) {
+      db.user
+        .updateOne({ fundsAvailable: x }, { userId: req.params.user })
+        .then(function(data, err) {
+          if (err) throw err;
+          console.log(data);
+          res.json(data);
+        });
     });
-  });
-
-  //write a PUT route and wrap inside function
-
-  // Delete an example by id
-  app.delete("/api/examples/:id", function(req, res) {
-    db.Example.destroy({ where: { id: req.params.id } }).then(function(
-      dbExample
-    ) {
-      res.json(dbExample);
-    });
-  });
+  }
 };
+
+//hn_YvbyFGxzX8BoATAmf
+//0ebb6649b6ff470299dc8fa3faed3116 (news)
+//https://newsapi.org/v2/top-headlines?q=microsoft&apiKey=0ebb6649b6ff470299dc8fa3faed3116
+
+//standard deviation - volatility
+//1, 3, 5, 10 yrs
+//sharpe ratio
+//max drawdown
