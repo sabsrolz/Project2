@@ -1,11 +1,11 @@
 require("dotenv").config();
-var express = require("express");
-var exphbs = require("express-handlebars");
+const express = require("express");
+// const exphbs = require("express-handlebars");
 
-var db = require("./models");
+const db = require("./models");
 
-var app = express();
-var PORT = process.env.PORT || 8080;
+const app = express();
+const PORT = process.env.PORT || 8080;
 
 // Middleware
 app.use(
@@ -16,7 +16,7 @@ app.use(
 app.use(express.json());
 app.use(express.static("public"));
 
-// // Handlebars
+// // Handlebars <- not using handlebars
 // app.engine(
 //   "handlebars",
 //   exphbs({
@@ -27,7 +27,7 @@ app.use(express.static("public"));
 
 // Routes
 require("./routes/apiRoutes")(app);
-//require("./routes/htmlRoutes")(app);
+require("./routes/htmlRoutes")(app);
 
 var syncOptions = {
   force: false

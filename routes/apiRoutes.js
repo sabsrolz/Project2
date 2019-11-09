@@ -1,13 +1,13 @@
 // var db = require("../models");
 // const axios = require("axios");
-// const moment = require("moment");
-console.log("api routes connected");
+const moment = require("moment");
+// console.log("api routes connected");
 
 module.exports = function(app) {
   //GET Route that will display current price of stock to user
   app.get("/api/", function(req, res) {
     // // like req.params --api/stock/:company
-    console.log("route got hit");
+    // console.log("route got hit");
     let ticker;
     let num_shares;
     let total_price = 0;
@@ -15,7 +15,7 @@ module.exports = function(app) {
       .add(1, "hours")
       .subtract(1, "minutes")
       .format("YYYY-MM-DD HH:mm:00");
-    console.log(currentTime);
+    console.log(`currentTime: ${currentTime}`);
     function searchTicker(company) {
       const api_key = "8HGF9L0ALM5LPNX5"; //send to env
       const query_ticker = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${company}&apikey=${api_key}`;
