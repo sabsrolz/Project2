@@ -50,3 +50,10 @@ $("#tickerForm").on("submit", function() {
       console.log(error);
     });
 });
+
+$("#transactionForm").on("submit", function() {
+  event.preventDefault();
+  // 1. verify transaction can be made (enough money for buy, enough stocks for sell)
+  // 2. post for transaction table
+  // 3. update money for user table
+});
