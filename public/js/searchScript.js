@@ -51,7 +51,18 @@ $("#tickerForm").on("submit", function () {
 
 $("#transactionForm").on("submit", function () {
   event.preventDefault();
-  // 1. verify transaction can be made (enough money for buy, enough stocks for sell)
-  // 2. post for transaction table
-  // 3. update money for user table
+
+  $.get(`/api/user${userId}`, function (data) {
+    // 1. verify user and password in localstorage match a row in users data table
+    //if sell
+    // 2. verify transaction can be made (enough money for buy, enough stocks for sell)
+  });
+  // how do i get userId
+  $.post(`/api/transaction/${userId}`, {
+    transactionType: $("#transactionType").val(),
+    numShares: $("#transationAmount").val()
+  });
+  $.put();
+  // 1. post for transaction table
+  // 2. update money for user table
 });
