@@ -39,30 +39,9 @@ if (process.env.NODE_ENV === "test") {
   syncOptions.force = true;
 }
 
-// Socket IO connection
-var app = require("express")();
-var server = require("http").Server(app);
-var io = require("socket.io")(server);
-
-server.listen(80);
-// WARNING: app.listen(80) will NOT work here!
-
-app.get("/", function(req, res) {
-  res.sendFile(__dirname + "/public/alpha_ts.html");
-});
-
-io.on("connection", function(socket) {
-  socket.emit("news", {
-    hello: "world"
-  });
-  socket.on("my other event", function(data) {
-    console.log(data);
-  });
-});
-
 // Starting the server, syncing our models ------------------------------------/
-db.sequelize.sync(syncOptions).then(function() {
-  app.listen(PORT, function() {
+const server = db.sequelize.sync(syncOptions).then(function () {
+  app.listen(PORT, function () {
     console.log(
       "==> 🌎  Listening on port %s. Visit http://localhost:%s/ in your browser.",
       PORT,
@@ -72,3 +51,12 @@ db.sequelize.sync(syncOptions).then(function() {
 });
 
 module.exports = app;
+
+
+// Socket IO connection
+const socket = require("socket.io");
+let io = socket(server);
+
+io.on("connection", function (socket) {
+  console.log("socket working", socket.id)
+})
