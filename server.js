@@ -1,11 +1,11 @@
 require("dotenv").config();
-var express = require("express");
-var exphbs = require("express-handlebars");
+const express = require("express");
+// const exphbs = require("express-handlebars");
 
-var db = require("./models");
+const db = require("./models");
 
-var app = express();
-var PORT = process.env.PORT || 8080;
+const app = express();
+const PORT = process.env.PORT || 8080;
 
 // Middleware
 app.use(
@@ -16,7 +16,7 @@ app.use(
 app.use(express.json());
 app.use(express.static("public"));
 
-// // Handlebars
+// // Handlebars <- not using handlebars
 // app.engine(
 //   "handlebars",
 //   exphbs({
@@ -26,7 +26,8 @@ app.use(express.static("public"));
 // app.set("view engine", "handlebars");
 
 // Routes
-//require("./routes/htmlRoutes")(app);
+require("./routes/apiRoutes")(app);
+require("./routes/htmlRoutes")(app);
 
 var syncOptions = {
   force: false
@@ -37,31 +38,6 @@ var syncOptions = {
 if (process.env.NODE_ENV === "test") {
   syncOptions.force = true;
 }
-
-// Socket IO connection
-var app = require("express")();
-var server = require("http").Server(app);
-
-require("./routes/apiRoutes")(app);
-
-var io = require("socket.io")(server);
-
-server.listen(80);
-
-// WARNING: app.listen(80) will NOT work here!
-
-app.get("/", function(req, res) {
-  res.sendFile(__dirname + "/public/alpha_ts.html");
-});
-
-io.on("connection", function(socket) {
-  socket.emit("news", {
-    hello: "world"
-  });
-  socket.on("my other event", function(data) {
-    console.log(data);
-  });
-});
 
 // Starting the server, syncing our models ------------------------------------/
 db.sequelize.sync(syncOptions).then(function() {
@@ -75,3 +51,20 @@ db.sequelize.sync(syncOptions).then(function() {
 });
 
 module.exports = app;
+
+// Socket IO connection
+const server = require("http").createServer(app);
+const io = require("socket.io").listen(server);
+users = [];
+connections = [];
+
+app.get("/", function(req, res) {
+  res.sendFile(__dirname + "/leaderboard.html");
+});
+io.sockets.on("connection", function(socket) {
+  connections.push("connecter: %s sockets connecterd", connections.lenght);
+
+  //disconect
+  connections.splice(connections.indexof(socket), 1);
+  console.log("disconnected %s sockets connected", connections.lenght);
+});

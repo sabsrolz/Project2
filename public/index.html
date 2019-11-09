@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
     <link
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet"
@@ -17,6 +18,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ticker Search</title>
   </head>
+
   <body class="blue-grey lighten-4">
     <header>
       <nav class="indigo darken-3 z-depth-3">
@@ -27,7 +29,7 @@
               ><i class="material-icons">menu</i></a
             >
             <ul class="right hide-on-med-and-down">
-              <li><a href="#">#</a></li>
+              <li><a href="/top">Home</a></li>
               <li><a href="#">#</a></li>
               <li><a href="#">#</a></li>
               <li><a href="#">#</a></li>
@@ -38,7 +40,7 @@
 
       <ul class="sidenav blue-grey darken-1" id="mobile-navbar">
         <div class="container">
-          <li><a href="#">#</a></li>
+          <li><a href="/top">Home</a></li>
           <li><a href="#">#</a></li>
           <li><a href="#">#</a></li>
           <li><a href="#">#</a></li>
@@ -48,58 +50,122 @@
     <main>
       <div class="container">
         <div class="row">
-          <div class="col s6 offset-s4">
-            <div class="hide-on-med-and-down">
-              <img
-                class="responsive-img"
-                src="https://cdn.frankerfacez.com/emoticon/218530/4"
-                alt=""
-              />
-              <img
-                class="responsive-img"
-                src="https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/lg/57/chart-with-upwards-trend_1f4c8.png"
-                alt=""
-              />
+          <div class="card hoverable">
+            <div class="container">
+              <form id="loginForm">
+                <h3>Log in</h3>
+
+                <div class="row">
+                  <div class="input-field">
+                    <input
+                      class="validate"
+                      required
+                      type="email"
+                      id="loginEmail"
+                    />
+                    <label for="loginEmail">Email</label>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="input-field">
+                    <input
+                      id="loginPass"
+                      required
+                      type="password"
+                      class="validate"
+                    />
+                    <label for="loginPass">Password</label>
+                  </div>
+                </div>
+                <button
+                  id="loginSubmitBtn"
+                  type="submit"
+                  class="btn blue-grey darken-3 waves-effect waves-light"
+                >
+                  <span>enter</span>
+                </button>
+                <br /><br />
+                Don't have an account?
+                <a href="#" id="showSignup">Sign up.</a>
+              </form>
+
+              <form id="signupForm" class="hide">
+                <h3>Sign Up</h3>
+                <div class="row">
+                  <div class="input-field">
+                    <input
+                      class="validate"
+                      required
+                      type="email"
+                      id="signupEmail"
+                    />
+                    <label for="signupEmail">Email</label>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="input-field">
+                    <input
+                      id="signupFirstName"
+                      required
+                      type="text"
+                      class="validate"
+                    />
+                    <label for="signupFirstName">First Name</label>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="input-field">
+                    <input
+                      id="signupLastName"
+                      required
+                      type="text"
+                      class="validate"
+                    />
+                    <label for="signupLastName">Last Name</label>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="input-field">
+                    <input
+                      id="signupPass"
+                      pattern="^\S{6,}$"
+                      onchange="this.setCustomValidity(this.validity.patternMismatch ? 'Must have at least 6 characters' : ''); if(this.checkValidity()) form.signupConfirmPass.pattern = this.value;"
+                      required
+                      type="password"
+                      class="validate"
+                    />
+                    <label for="signupPass">Password</label>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="input-field">
+                    <input
+                      id="signupConfirmPass"
+                      pattern="^\S{6,}$"
+                      onchange="this.setCustomValidity(this.validity.patternMismatch ? 'Please enter the same Password as above' : '');"
+                      required
+                      type="password"
+                      class="validate"
+                    />
+                    <label for="signupConfirmPass">Confirm Password</label>
+                  </div>
+                </div>
+                <button
+                  id="signupSubmitBtn"
+                  type="submit"
+                  class="btn blue-grey darken-3 waves-effect waves-light"
+                >
+                  <span>enter</span>
+                </button>
+                <br /><br />
+                Already have an account?
+                <a href="#" id="showLogin">Log in.</a>
+              </form>
             </div>
-          </div>
-        </div>
-        <div class="card hoverable">
-          <div class="container">
-            <h3>Log in</h3>
-
-            <form id="tickerForm">
-              <div class="row">
-                <div class="input-field">
-                  <input
-                    class="validate"
-                    required
-                    type="email"
-                    id="loginEmail"
-                  />
-                  <label for="loginEmail">Email</label>
-                </div>
-              </div>
-
-              <div class="row">
-                <div class="input-field">
-                  <input
-                    id="loginPass"
-                    required
-                    type="password"
-                    class="validate"
-                  />
-                  <label for="loginPass">Password</label>
-                </div>
-              </div>
-              <button
-                id="loginSubmitBtn"
-                type="submit"
-                class="btn blue-grey darken-3 waves-effect waves-light"
-              >
-                <span>enter</span>
-              </button>
-              <br /><br />
-            </form>
           </div>
         </div>
       </div>
@@ -111,5 +177,6 @@
     </footer>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="./js/login.js"></script>
+    <script src="./js/chat.js"></script>
   </body>
 </html>
