@@ -1,43 +1,44 @@
-// var db = require("../models");
-// const axios = require("axios");
+var db = require("../models");
+const axios = require("axios");
 const moment = require("moment");
-// console.log("api routes connected");
+console.log("api routes connected");
 
 module.exports = function(app) {
   //GET Route that will display current price of stock to user
-  app.get("/api/", function(req, res) {
-    // // like req.params --api/stock/:company
-    // console.log("route got hit");
+  app.get("/api/stock/:company", function(req, res) {
+    let company = req.params.company;
     let ticker;
-    let num_shares;
-    let total_price = 0;
-    let currentTime = moment()
-      .add(1, "hours")
-      .subtract(1, "minutes")
-      .format("YYYY-MM-DD HH:mm:00");
-    console.log(`currentTime: ${currentTime}`);
-    function searchTicker(company) {
-      const api_key = "8HGF9L0ALM5LPNX5"; //send to env
-      const query_ticker = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${company}&apikey=${api_key}`;
-      axios.get(query_ticker).then(function(response) {
-        ticker = response["bestMatches"][0]["1. symbol"];
-        const queryURLIntraday = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${ticker}&interval=1min&apikey=8HGF9L0ALM5LPNX5`;
-        axios.get(queryURLIntraday).then(function(response) {
-          close_minutely =
-            response["Time Series (1min)"][currentTime]["4. close"];
-          total_price = num_shares * close_minutely;
-          console.log(total_price);
-        });
+    let num_shares = 5;
+    let total_price;
+    // let currentTime = moment()
+    //   .add(1, "hours")
+    //   .subtract(1, "minutes")
+    //   .format("YYYY-MM-DD HH:mm:00");
+    // console.log(currentTime);
+    //console.log(company);
+    const api_key = "8HGF9L0ALM5LPNX5"; //send to env
+    const query_ticker = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${company}&apikey=${api_key}`;
+    axios.get(query_ticker).then(function(response) {
+      //console.log(response.data["bestMatches"][0]["1. symbol"]);
+      ticker = response.data["bestMatches"][0]["1. symbol"];
+      const queryURLIntraday = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${ticker}&interval=1min&apikey=8HGF9L0ALM5LPNX5`;
+      axios.get(queryURLIntraday).then(function(response) {
+        //console.log(response["Time Series (1min)"]);
+        const timeSeries = response.data["Time Series (1min)"];
+        close_minutely = Object.values(timeSeries)[0]["4. close"];
+        //console.log(close_minutely);
+        total_price = num_shares * parseFloat(close_minutely);
+        console.log(total_price);
+
         const transaction_object = {
           companyName: company,
           ticker: ticker,
           currentStockPrice: close_minutely
         };
+
         res.json(transaction_object);
       });
-    }
-    let test = { test1: 1, test2: 2 };
-    res.json(test);
+    });
   });
 
   app.get("/api/test", function(req, res) {
