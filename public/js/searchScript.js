@@ -1,16 +1,16 @@
 $(".sidenav").sidenav();
 $("select").formSelect();
-$("#tickerForm").on("submit", function() {
+$("#tickerForm").on("submit", function () {
   event.preventDefault();
   const ticker = $("#tickerSearch")
     .val()
     .trim();
 
   $.ajax({
-    url: `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=${ticker}&outputsize=compact&interval=60min&apikey=L9NQIQI6RSM70ZCL`
-  })
-    .then(function(data) {
-      console.log(data);
+      url: `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=${ticker}&outputsize=compact&interval=60min&apikey=L9NQIQI6RSM70ZCL`
+    })
+    .then(function (data) {
+      console.log(data)
       const dataPoints = [];
 
       const options = {
@@ -27,13 +27,11 @@ $("#tickerForm").on("submit", function() {
           title: "USD",
           includeZero: true
         },
-        data: [
-          {
-            type: "line",
-            yValueFormatString: "#,###.##",
-            dataPoints: dataPoints
-          }
-        ]
+        data: [{
+          type: "line",
+          yValueFormatString: "#,###.##",
+          dataPoints: dataPoints
+        }]
       };
 
       for (const element in data["Monthly Time Series"]) {
@@ -46,14 +44,25 @@ $("#tickerForm").on("submit", function() {
       $("#stockInfo").removeClass("hide");
       $("#chartContainer").CanvasJSChart(options);
     })
-    .catch(function(error) {
+    .catch(function (error) {
       console.log(error);
     });
 });
 
-$("#transactionForm").on("submit", function() {
+$("#transactionForm").on("submit", function () {
   event.preventDefault();
-  // 1. verify transaction can be made (enough money for buy, enough stocks for sell)
-  // 2. post for transaction table
-  // 3. update money for user table
+
+  $.get(`/api/user${userId}`, function (data) {
+    // 1. verify user and password in localstorage match a row in users data table
+    //if sell
+    // 2. verify transaction can be made (enough money for buy, enough stocks for sell)
+  });
+  // how do i get userId
+  $.post(`/api/transaction/${userId}`, {
+    transactionType: $("#transactionType").val(),
+    numShares: $("#transationAmount").val()
+  });
+  $.put();
+  // 1. post for transaction table
+  // 2. update money for user table
 });

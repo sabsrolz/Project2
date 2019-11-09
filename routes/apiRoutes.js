@@ -3,9 +3,9 @@ const axios = require("axios");
 const moment = require("moment");
 console.log("api routes connected");
 
-module.exports = function(app) {
+module.exports = function (app) {
   //GET Route that will display current price of stock to user
-  app.get("/api/stock/:company", function(req, res) {
+  app.get("/api/stock/:company", function (req, res) {
     let company = req.params.company;
     let ticker;
     let num_shares = 5;
@@ -18,11 +18,12 @@ module.exports = function(app) {
     //console.log(company);
     const api_key = "8HGF9L0ALM5LPNX5"; //send to env
     const query_ticker = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${company}&apikey=${api_key}`;
-    axios.get(query_ticker).then(function(response) {
+    axios.get(query_ticker).then(function (response) {
+      $("#stockInfoName").text("Name: " + ticker)
       //console.log(response.data["bestMatches"][0]["1. symbol"]);
       ticker = response.data["bestMatches"][0]["1. symbol"];
       const queryURLIntraday = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${ticker}&interval=1min&apikey=8HGF9L0ALM5LPNX5`;
-      axios.get(queryURLIntraday).then(function(response) {
+      axios.get(queryURLIntraday).then(function (response) {
         //console.log(response["Time Series (1min)"]);
         const timeSeries = response.data["Time Series (1min)"];
         close_minutely = Object.values(timeSeries)[0]["4. close"];
@@ -41,11 +42,11 @@ module.exports = function(app) {
     });
   });
 
-  app.get("/api/test", function(req, res) {
+  app.get("/api/test", function (req, res) {
     res.send("ok");
   });
   //POST ROUTE when user purchases/sells # of shares at $ price
-  app.post("/api/transaction/:user", function(req, res) {
+  app.post("/api/transaction/:user", function (req, res) {
     //req.body = {numShares, buy/sell}
     const numShares = req.body.numShares;
     const transactionType = req.body.transactionType;
@@ -62,7 +63,7 @@ module.exports = function(app) {
           user: userId
         }
       })
-      .then(function(result, err) {
+      .then(function (result, err) {
         if (err) throw err;
         // res.json(result);
         // console.log(result);
@@ -82,7 +83,7 @@ module.exports = function(app) {
               .create({
                 transaction
               })
-              .then(function(err, result) {
+              .then(function (err, result) {
                 if (err) throw err;
                 console.log(result);
                 console.log("transaction was successfully recorded");
@@ -93,12 +94,14 @@ module.exports = function(app) {
         } else {
           db.transactions_table
             .findAndCountAll({
-              include: [{ ticker: ticker }],
+              include: [{
+                ticker: ticker
+              }],
               where: {
                 userId: userId
               }
             })
-            .then(function(err, result) {
+            .then(function (err, result) {
               if (err) throw err;
               console.log(result);
               if (numShares >= result.count) {
@@ -115,7 +118,7 @@ module.exports = function(app) {
                   .create({
                     transaction
                   })
-                  .then(function(err, result) {
+                  .then(function (err, result) {
                     if (err) throw err;
                     console.log(result);
                     console.log("transaction was successfully recorded");
@@ -130,10 +133,14 @@ module.exports = function(app) {
 
   //put calls
   function updateUser(x) {
-    app.put("/api/transaction/:user", function(req, res) {
+    app.put("/api/transaction/:user", function (req, res) {
       db.user
-        .updateOne({ fundsAvailable: x }, { userId: req.params.user })
-        .then(function(data, err) {
+        .updateOne({
+          fundsAvailable: x
+        }, {
+          userId: req.params.user
+        })
+        .then(function (data, err) {
           if (err) throw err;
           console.log(data);
           res.json(data);
