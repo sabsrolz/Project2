@@ -59,7 +59,7 @@ users = [];
 connections = [];
 
 app.get("/", function (req, res) {
-  res.sendFile(__dirname + "/public/leaderboard.html");
+  res.sendFile(__dirname + "/leaderboard.html");
 });
 io.sockets.on("connection", function (socket) {
   connections.push("connecter: %s sockets connecterd", connections.lenght);
@@ -76,3 +76,5 @@ io.sockets.on("connection", function (socket) {
     })
   })
 });
+
+module.exports = io
