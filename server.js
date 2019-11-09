@@ -26,7 +26,6 @@ app.use(express.static("public"));
 // app.set("view engine", "handlebars");
 
 // Routes
-require("./routes/apiRoutes")(app);
 //require("./routes/htmlRoutes")(app);
 
 var syncOptions = {
@@ -42,9 +41,13 @@ if (process.env.NODE_ENV === "test") {
 // Socket IO connection
 var app = require("express")();
 var server = require("http").Server(app);
+
+require("./routes/apiRoutes")(app);
+
 var io = require("socket.io")(server);
 
 server.listen(80);
+
 // WARNING: app.listen(80) will NOT work here!
 
 app.get("/", function(req, res) {
