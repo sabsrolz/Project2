@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="./styles/style.css" />
     <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ticker Search</title>
+    <title>Profile Search</title>
   </head>
   <body>
     <header>
@@ -38,7 +38,7 @@
 
       <ul class="sidenav blue-grey darken-1" id="mobile-navbar">
         <div class="container">
-          <li><a href="#">#</a></li>
+          <li><a href="/top">Home</a></li>
           <li><a href="#">#</a></li>
           <li><a href="#">#</a></li>
           <li><a href="#">#</a></li>
@@ -49,18 +49,18 @@
       <div class="container">
         <div class="card hoverable">
           <div class="container">
-            <h3>Search for a stock</h3>
-            <form id="tickerForm">
+            <h3>User Profile</h3>
+            <form id="profileSearchForm">
               <div class="input-field">
                 <input
                   class="validate"
                   required
                   type="text"
-                  id="tickerSearch"
+                  id="profileSearch"
                 />
-                <label for="tickerSearch">Stock Ticker</label>
+                <label for="profileSearch">Search by Name</label>
                 <button
-                  id="tickerSubmitBtn"
+                  id="profileSubmitBtn"
                   type="submit"
                   class="btn blue-grey darken-3 waves-effect waves-light"
                 >
@@ -71,53 +71,25 @@
             </form>
           </div>
         </div>
-        <div
-          id="chartContainer"
-          class="card hoverable hide"
-          style="height: 300px; width: 100%;"
-        ></div>
         <div class="row">
-          <div id="stockInfo" class="card hoverable col s12 hide">
+          <div id="profileInfo" class="card hoverable col s12 hide">
             <h5>
-              (Stock Info Here):
+              (Profile Info Here):
             </h5>
-            <h5 id="stockInfoName">
+            <h5 id="profileName">
               Name:
             </h5>
-            <h5 id="stockInfoTicker">
-              Ticker:
+            <h5 id="portfolio">
+              Stock Portfolio:
             </h5>
-            <h5 id="stockInfoPrice">
-              Price:
+            <h5 id="profileNetWorth">
+              Net Worth:
             </h5>
-            <form id="transactionForm">
-              <div class="container">
-                <div class="input-field">
-                  <select name="transactionType">
-                    <option name="transactionType" value="buy">Buy</option>
-                    <option name="transactionType" value="sell">Sell</option>
-                  </select>
-                  <label for="transactionType">Make a transaction:</label>
-                </div>
-                <div class="input-field col s12">
-                  <input
-                    required
-                    class="validate"
-                    type="number"
-                    id="transactionAmount"
-                  />
-                  <label>Choose an Amount:</label>
-                </div>
-                <button
-                  id="transactionSubmitBtn"
-                  type="submit"
-                  class="btn blue-grey darken-3 waves-effect waves-light"
-                >
-                  <span>Go</span>
-                </button>
-                <br /><br />
-              </div>
-            </form>
+            <div
+              id="chartContainer"
+              class="card hoverable"
+              style="height: 300px; width: 100%;"
+            ></div>
           </div>
         </div>
       </div>
@@ -128,7 +100,7 @@
       </div>
     </footer>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-    <script src="./js/searchScript.js"></script>
+    <script src="./js/profileSearch.js"></script>
     <script src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script>
   </body>
 </html>
