@@ -1,5 +1,5 @@
 module.exports = function (sequelize, DataTypes) {
-  var user = sequelize.define("user", {
+  var User = sequelize.define("User", {
     userId: {
       type: DataTypes.INTEGER,
       autoIncremenet: true,
@@ -11,5 +11,5 @@ module.exports = function (sequelize, DataTypes) {
     password: DataTypes.STRING,
     fundsAvailable: DataTypes.DECIMAL
   });
-  return user;
+  return User;
 };
