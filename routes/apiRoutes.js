@@ -81,9 +81,7 @@ module.exports = function(app) {
           sharesTraded: numShares,
           transactionPrice: transTotal
         };
-        db.Transactions.create({
-          transaction
-        }).then(function(err, result) {
+        db.Transactions.create(transaction).then(function(err, result) {
           if (err) throw err;
           console.log(result);
           console.log("transaction was successfully recorded");
@@ -115,7 +113,7 @@ module.exports = function(app) {
               sharesTraded: numShares,
               transactionPrice: transTotal
             };
-            updatedFunds(updatedFunds);
+            updateUser(updatedFunds); // corrected from updatedFunds(updatedFunds)
             db.transactions
               .create({
                 transaction
@@ -165,18 +163,15 @@ module.exports = function(app) {
       fundsAvailable: 1000
     };
     db.User.create(newUser).then(function(err, result) {
-      // if (err) throw err;
-      console.log(result);
-      console.log(err);
+      if (err) throw err;
       console.log("new user created");
     });
   });
 
-  // get all users
-  // app.get("/api/allUsers", function(req, res) {
-  //   db.Users.findAll().then(function() {
-  //     // if (err) throw err;
-  //   });
+  // get all users --------- this feeds data to leaderboard for sorting and display
+  // having trouble with transactions table
+  // app.get("/api/allTransactions", function(req, res) {
+  //   db.transactions.findAll().then(function() {});
   // });
 
   // getting user by email and password:
