@@ -18,7 +18,7 @@
     <title>Ticker Search</title>
   </head>
 
-  <body>
+  <body class="blue-grey lighten-4">
     <header>
       <nav class="indigo darken-3 z-depth-3">
         <div class="container">
@@ -46,20 +46,15 @@
         </div>
       </ul>
     </header>
-    <main class="blue-grey lighten-4">
+    <main>
       <div class="container">
         <div class="card hoverable">
           <div class="container">
             <h3>Search for a stock</h3>
             <form id="tickerForm">
               <div class="input-field">
-                <input
-                  class="validate"
-                  required
-                  type="text"
-                  id="tickerSearch"
-                />
-                <label for="tickerSearch">Stock Ticker</label>
+                <input class="validate" required type="text" id="stockSearch" />
+                <label for="stockSearch">Stock Ticker</label>
                 <button
                   id="tickerSubmitBtn"
                   type="submit"
@@ -79,9 +74,6 @@
         ></div>
         <div class="row">
           <div id="stockInfo" class="card hoverable col s12 hide">
-            <h5>
-              (Stock Info Here):
-            </h5>
             <h5 id="stockInfoName">
               Name:
             </h5>
@@ -94,7 +86,7 @@
             <form id="transactionForm">
               <div class="container">
                 <div class="input-field">
-                  <select name="transactionType">
+                  <select id="transactionType" name="transactionType">
                     <option name="transactionType" value="buy">Buy</option>
                     <option name="transactionType" value="sell">Sell</option>
                   </select>

@@ -8,7 +8,7 @@ module.exports = function(app) {
   app.get("/api/stock/:company", function(req, res) {
     let company = req.params.company;
     let ticker;
-    let num_shares = 5;
+    // let num_shares = 5;
     let total_price;
     // let currentTime = moment()
     //   .add(1, "hours")
@@ -16,20 +16,23 @@ module.exports = function(app) {
     //   .format("YYYY-MM-DD HH:mm:00");
     // console.log(currentTime);
     //console.log(company);
-    const api_key = "8HGF9L0ALM5LPNX5"; //send to env
+    const api_key = "L9NQIQI6RSM70ZCL"; //send to env
     const query_ticker = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${company}&apikey=${api_key}`;
     axios.get(query_ticker).then(function(response) {
-      $("#stockInfoName").text("Name: " + ticker);
+      // this should be client side:
+      // $("#stockInfoName").text("Name: " + ticker);
       //console.log(response.data["bestMatches"][0]["1. symbol"]);
       ticker = response.data["bestMatches"][0]["1. symbol"];
       const queryURLIntraday = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${ticker}&interval=1min&apikey=8HGF9L0ALM5LPNX5`;
       axios.get(queryURLIntraday).then(function(response) {
-        //console.log(response["Time Series (1min)"]);
+        // console.log(response.data["Time Series (1min)"]);
         const timeSeries = response.data["Time Series (1min)"];
         close_minutely = Object.values(timeSeries)[0]["4. close"];
         //console.log(close_minutely);
-        total_price = num_shares * parseFloat(close_minutely);
-        console.log(total_price);
+
+        // Sean : "I didn't realize it was multiplying by 5 woops"
+        // total_price = num_shares * parseFloat(close_minutely);
+        // console.log(total_price);
 
         const transaction_object = {
           companyName: company,
@@ -54,81 +57,80 @@ module.exports = function(app) {
     const companyName = req.body.companyName;
     const ticker = req.body.ticker;
     const userId = req.params.user;
-    transTotal = numShares * currentPrice;
+    const transTotal = numShares * currentPrice;
+    const currentFunds = req.body.fundsAvailable;
     let transaction;
     let updatedFunds;
-    db.User.findAll({
-      where: {
-        user: userId
-      }
-    }).then(function(result, err) {
-      if (err) throw err;
-      // res.json(result);
-      // console.log(result);
-      const currentFunds = result.fundsAvailable;
-      if (transactionType === "buy") {
-        if (currentFunds >= transTotal) {
-          updatedFunds = currentFunds - transTotal;
-          updateUser(updatedFunds);
-          transaction = {
-            companyName: companyName,
-            ticker: ticker,
-            userId: userId,
-            sharesTraded: numShares,
-            transactionPrice: transTotal
-          };
-          db.transactions
-            .create({
-              transaction
-            })
-            .then(function(err, result) {
-              if (err) throw err;
-              console.log(result);
-              console.log("transaction was successfully recorded");
-            });
-        } else {
-          console.log("you dont have enough funds to complete transaction");
-        }
+    // db.User.findAll({
+    //   where: {
+    //     id: userId
+    //   }
+    // }).then(function(result, err) {
+    //   if (err) throw err;
+    // res.json(result);
+    // console.log(result);
+    console.log(currentFunds);
+    if (transactionType === "buy") {
+      if (currentFunds >= transTotal) {
+        updatedFunds = currentFunds - transTotal;
+        updateUser(updatedFunds);
+        transaction = {
+          companyName: companyName,
+          ticker: ticker,
+          userId: userId,
+          sharesTraded: numShares,
+          transactionPrice: transTotal
+        };
+        db.Transactions.create({
+          transaction
+        }).then(function(err, result) {
+          if (err) throw err;
+          console.log(result);
+          console.log("transaction was successfully recorded");
+        });
       } else {
-        db.transactions_table
-          .findAndCountAll({
-            include: [
-              {
-                ticker: ticker
-              }
-            ],
-            where: {
-              userId: userId
-            }
-          })
-          .then(function(err, result) {
-            if (err) throw err;
-            console.log(result);
-            if (numShares >= result.count) {
-              updatedFunds = currentFunds + transTotal;
-              transaction = {
-                companyName: companyName,
-                ticker: ticker,
-                userId: userId,
-                sharesTraded: numShares,
-                transactionPrice: transTotal
-              };
-              updatedFunds(updatedFunds);
-              db.transactions
-                .create({
-                  transaction
-                })
-                .then(function(err, result) {
-                  if (err) throw err;
-                  console.log(result);
-                  console.log("transaction was successfully recorded");
-                });
-            } else {
-              console.log("Insufficient shares to complete transaction");
-            }
-          });
+        console.log("you dont have enough funds to complete transaction");
       }
-    });
+    } else {
+      db.transactions
+        .findAndCountAll({
+          include: [
+            {
+              ticker: ticker
+            }
+          ],
+          where: {
+            userId: userId
+          }
+        })
+        .then(function(err, result) {
+          if (err) throw err;
+          console.log(result);
+          if (numShares >= result.count) {
+            updatedFunds = currentFunds + transTotal;
+            transaction = {
+              companyName: companyName,
+              ticker: ticker,
+              userId: userId,
+              sharesTraded: numShares,
+              transactionPrice: transTotal
+            };
+            updatedFunds(updatedFunds);
+            db.transactions
+              .create({
+                transaction
+              })
+              .then(function(err, result) {
+                if (err) throw err;
+                console.log(result);
+                console.log("transaction was successfully recorded");
+              });
+          } else {
+            console.log("Insufficient shares to complete transaction");
+          }
+        });
+    }
+    // });
   });
 
   //put calls
@@ -179,11 +181,20 @@ module.exports = function(app) {
 
   // getting user by email and password:
   app.post("/api/user/loginid", function(req, res) {
-    console.log(req.body);
     const loginEmail = req.body.loginEmail;
     const loginPassword = req.body.loginPassword;
     db.User.findOne({
       where: { email: loginEmail, password: loginPassword }
+    }).then(function(result, err) {
+      if (err) throw err;
+      res.json(result);
+    });
+  });
+
+  // get user by id, after login:
+  app.post("/api/user/idcheck", function(req, res) {
+    db.User.findOne({
+      where: { id: req.body.userId }
     }).then(function(result, err) {
       if (err) throw err;
       res.json(result);

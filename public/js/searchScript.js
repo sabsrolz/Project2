@@ -3,17 +3,42 @@ $("select").formSelect();
 
 $.get("/api/");
 
+// gets user data on load
+let userData;
+const userId = {
+  userId: sessionStorage.getItem("stockAppUser")
+};
+if (sessionStorage.getItem("stockAppUser") > 0) {
+  $.post("api/user/idcheck", userId, function(data) {
+    console.log(data);
+    userData = data;
+  });
+}
 $("#tickerForm").on("submit", function() {
   event.preventDefault();
-  const ticker = $("#tickerSearch")
+  const company = $("#stockSearch")
     .val()
     .trim();
 
-  $.ajax({
-    url: `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=${ticker}&outputsize=compact&interval=60min&apikey=L9NQIQI6RSM70ZCL`
-  })
-    .then(function(data) {
-      console.log(data);
+  // fill card with display info, and data for post use
+  $.get(`/api/stock/${company}`, function(data) {
+    $("#stockInfoName").text("Name: " + data.companyName);
+    $("#stockInfoTicker").text("Ticker: " + data.ticker);
+    $("#stockInfoPrice").text("Price: " + data.currentStockPrice);
+
+    $("#stockInfo").data("name", data.companyName);
+    $("#stockInfo").data("ticker", data.ticker);
+    $("#stockInfo").data("price", data.currentStockPrice);
+    console.log(data);
+
+    // following section for CHART only:
+    const tickerData = $("#stockInfo").data();
+    console.log(tickerData.ticker);
+    console.log(tickerData.price);
+    $.ajax({
+      url: `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=${tickerData.ticker}&outputsize=compact&interval=60min&apikey=L9NQIQI6RSM70ZCL`
+    }).then(function(data) {
+      // console.log(data);
       const dataPoints = [];
 
       const options = {
@@ -42,32 +67,40 @@ $("#tickerForm").on("submit", function() {
       for (const element in data["Monthly Time Series"]) {
         dataPoints.push({
           x: new Date(element),
-          y: parseFloat(data["Monthly Time Series"][element]["4. close"])
+          y: parseFloat(data["Monthly Time Series"][element]["4.close"])
         });
       }
-      $("#chartContainer").removeClass("hide");
+      if (dataPoints.length > 0) {
+        $("#chartContainer").removeClass("hide");
+      }
       $("#stockInfo").removeClass("hide");
       $("#chartContainer").CanvasJSChart(options);
-    })
-    .catch(function(error) {
-      console.log(error);
     });
+  }).catch(function(error) {
+    console.log(error);
+  });
 });
 
 $("#transactionForm").on("submit", function() {
   event.preventDefault();
+  console.log(userData);
+  // userid in sessionstorage
+  const tickerData = $("#stockInfo").data();
 
-  $.get(`/api/user${userId}`, function(data) {
-    // 1. verify user and password in localstorage match a row in users data table
-    //if sell
-    // 2. verify transaction can be made (enough money for buy, enough stocks for sell)
-  });
-  // how do i get userId
-  $.post(`/api/transaction/${userId}`, {
+  const body = {
+    numShares: $("#transactionAmount").val(),
     transactionType: $("#transactionType").val(),
-    numShares: $("#transationAmount").val()
-  });
-  $.put();
-  // 1. post for transaction table
-  // 2. update money for user table
+    currentPrice: tickerData.price,
+    companyName: tickerData.name,
+    ticker: tickerData.ticker,
+    fundsAvailable: userData.fundsAvailable
+  };
+  console.log(body);
+  if (userData) {
+    $.post(`/api/transaction/${userData.id}`, body, function(data) {
+      console.log(data);
+    });
+  } else {
+    alert("You are not logged in!");
+  }
 });
