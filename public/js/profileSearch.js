@@ -9,24 +9,39 @@ $("form").on("submit", function() {
       .trim()
   }).then(function(data) {
     // console.log(data);
+    const portfolio = {};
+    let networth = 0;
     if (data.id) {
       $("#profileName").text(`Name: ${data.firstName} ${data.lastName}`);
       $("#profileFunds").text(`Funds: $${data.fundsAvailable}`);
-      $("#profileNetWorth").data("networth", data.fundsAvailable);
+      networth += parseFloat(data.fundsAvailable);
     }
     $.post("/api/allTransactions", data, function(transactions) {
-      $("#portfolio").data("portfolio", transactions);
+      transactions.forEach(element => {
+        // console.log(element);
+        portfolio[`${element.companyName}`] = 0;
+        portfolio[element.companyName] += parseInt(element.sharesTraded);
+      });
     }).then(function() {
-      console.log($("#portfolio").data("portfolio"));
-      // MUST TOTAL NUMBER OF OWNED STOCKS INCLUDING SELL FIRST, OR WILL NOT BE ACCURATE
-
-      $("#portfolio")
-        .data("portfolio")
-        .forEach(element => {
-          $.get(`/api/stock/${element.companyName}`, function(data) {
+      console.log(portfolio);
+      console.log(networth);
+      for (const stock in portfolio) {
+        // console.log(stock);
+        if (portfolio[stock] != 0) {
+          $.get(`/api/stock/${stock}`, function(data) {
             console.log(data.currentStockPrice);
+            $("#tbody").append(
+              `<tr><td>${stock}</td><td>${portfolio[stock]}</td><td>$${data.currentStockPrice}</td></tr>`
+            );
+            networth += data.currentStockPrice * portfolio[stock];
+            $("#profileNetWorth").text(`Net Worth: $${networth}`);
           });
-        });
+        }
+        // const element = portfolio[stock];
+      }
+      // MUST TOTAL NUMBER OF OWNED STOCKS INCLUDING SELL FIRST, OR WILL NOT BE ACCURATE
+      // this comes later-----------------
+      // ---------------------------
     });
   });
 
