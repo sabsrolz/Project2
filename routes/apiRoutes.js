@@ -213,7 +213,7 @@ module.exports = function(app) {
     console.log("req.body.id: " + req.body.id);
   });
 
-  // getting user by email and password:
+  // get user by email and password:
   app.post("/api/user/loginid", function(req, res) {
     const loginEmail = req.body.email;
     const loginPassword = req.body.password;
@@ -221,6 +221,16 @@ module.exports = function(app) {
       where: { email: loginEmail, password: loginPassword }
     }).then(function(result, err) {
       // console.log(result);
+      res.json(result);
+    });
+  });
+
+  // get user by first name
+  app.post("/api/user/namecheck", function(req, res) {
+    console.log(req.body);
+    db.User.findOne({
+      where: { firstName: req.body.name }
+    }).then(function(result, err) {
       res.json(result);
     });
   });
