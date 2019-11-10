@@ -15,7 +15,6 @@ $("#loginForm").on("submit", function() {
     sessionStorage.setItem("stockAppUser", userId);
     if (sessionStorage.getItem("stockAppUser") > 0) {
       console.log("logged in!");
-      $.get("/top");
     } else {
       console.log("invalid credentials");
     }
