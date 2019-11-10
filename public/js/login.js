@@ -4,17 +4,18 @@ $("#loginForm").on("submit", function() {
   event.preventDefault();
 
   const login = {
-    loginEmail: $("#loginEmail").val(),
-    loginPassword: $("#loginPass").val()
+    email: $("#loginEmail").val(),
+    password: $("#loginPass").val()
   };
   let userId = -1;
-  $.post("api/user/loginid", login, function(data) {
+  $.post("/api/user/loginid", login, function(data) {
     if (data.id) {
       userId = data.id;
     }
     sessionStorage.setItem("stockAppUser", userId);
     if (sessionStorage.getItem("stockAppUser") > 0) {
       console.log("logged in!");
+      $.get("/top");
     } else {
       console.log("invalid credentials");
     }
@@ -23,22 +24,21 @@ $("#loginForm").on("submit", function() {
 
 $("#signupForm").on("submit", function() {
   event.preventDefault();
+  let userId = -1;
   const newUser = {
     firstName: $("#signupFirstName").val(),
     lastName: $("#signupLastName").val(),
     email: $("#signupEmail").val(),
     password: $("#signupPass").val()
   };
-  $.post("/api/user", newUser);
-  // sign up conversation here
 
-  sessionStorage.setItem("stockAppUser", {
-    email: newUser.email,
-    password: newUser.password
-  });
-
-  $.get("/api/user/login", newUser, function(data) {
+  $.post("/api/user", newUser, function(data) {
+    // sign up conversation here
     console.log(data);
+    if (data.id) {
+      userId = data.id;
+    }
+    sessionStorage.setItem("stockAppUser", userId);
   });
 });
 

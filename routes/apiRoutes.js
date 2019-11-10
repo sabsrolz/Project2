@@ -149,7 +149,7 @@ module.exports = function(app) {
               .create({
                 transaction
               })
-              .then(function(err, result) {
+              .then(function(result, err) {
                 if (err) throw err;
                 // console.log(result);
                 console.log("transaction was successfully recorded");
@@ -164,23 +164,6 @@ module.exports = function(app) {
 
   // }
 
-  // creating a new user:
-  app.post("/api/user", function(req, res) {
-    // req.body = {all user data except id and money}
-    // console.log(req.body);
-    const newUser = {
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      email: req.body.email,
-      password: req.body.password,
-      fundsAvailable: 1000
-    };
-    db.User.create(newUser).then(function(err, result) {
-      if (err) throw err;
-      console.log("new user created");
-    });
-  });
-
   // get all users --------- this feeds data to leaderboard for sorting and display
   // having trouble with transactions table
   // app.get("/api/allTransactions", function(req, res) {
@@ -189,12 +172,12 @@ module.exports = function(app) {
 
   // getting user by email and password:
   app.post("/api/user/loginid", function(req, res) {
-    const loginEmail = req.body.loginEmail;
-    const loginPassword = req.body.loginPassword;
+    const loginEmail = req.body.email;
+    const loginPassword = req.body.password;
     db.User.findOne({
       where: { email: loginEmail, password: loginPassword }
     }).then(function(result, err) {
-      if (err) throw err;
+      // console.log(result);
       res.json(result);
     });
   });
@@ -206,6 +189,30 @@ module.exports = function(app) {
     }).then(function(result, err) {
       if (err) throw err;
       res.json(result);
+    });
+  });
+
+  // creating a new user:
+  app.post("/api/user", function(req, res) {
+    // req.body = {all user data except id and money}
+    // console.log(req.body);
+    const newUser = {
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      email: req.body.email,
+      password: req.body.password,
+      fundsAvailable: 1000
+    };
+    db.User.create(newUser).then(function(result, err) {
+      if (err) throw err;
+      console.log("new user created");
+      db.User.findOne({
+        where: { email: newUser.email, password: newUser.password }
+      }).then(function(result, err) {
+        if (err) throw err;
+
+        res.json(result);
+      });
     });
   });
 };
