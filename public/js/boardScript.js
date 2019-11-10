@@ -2,9 +2,16 @@ $(".sidenav").sidenav();
 
 // To do:
 
-// Get data of users and total of asset values (probably on routing side - nope i lied let's do it here - Sean)
+// Get data of users and total of asset values (probably on routing side ) // findandcountall does this for us
 
-$.get();
+$.get("api/allUsers", function(data) {
+  const usersArray = data;
+  console.log(usersArray);
+  usersArray.forEach(userObject => {
+    // console.log(userObject.id);
+    $.post("/api/allTransactions", userObject);
+  });
+});
 
 const rows = $("#leaderboard tbody tr").get();
 rows.sort(function(first, second) {

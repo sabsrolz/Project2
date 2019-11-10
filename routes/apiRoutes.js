@@ -9,7 +9,7 @@ module.exports = function(app) {
     let company = req.params.company;
     let ticker;
     // let num_shares = 5;
-    let total_price;
+    // let total_price;
     // let currentTime = moment()
     //   .add(1, "hours")
     //   .subtract(1, "minutes")
@@ -164,11 +164,55 @@ module.exports = function(app) {
 
   // }
 
-  // get all users --------- this feeds data to leaderboard for sorting and display
-  // having trouble with transactions table
-  // app.get("/api/allTransactions", function(req, res) {
-  //   db.transactions.findAll().then(function() {});
-  // });
+  // get all users, fundsavailable and networth(funds+portfolio)
+  // my head hurts
+
+  app.get("/api/allUsers", function(req, res) {
+    const usersArray = [];
+    db.User.findAll()
+      .then(function(result, err) {
+        for (const user in result) {
+          const userObject = {
+            id: result[user].id.toString(),
+            funds: result[user].fundsAvailable,
+            portfolio: [],
+            netWorth: result[user].fundsAvailable
+          };
+          usersArray.push(userObject);
+        }
+      })
+
+      // NOTE : cascading .thens are causing problems
+
+      // .then(function() {
+      //   usersArray.forEach(object => {
+      //     db.Transactions.findAll({
+      //       where: {
+      //         userId: object.id
+      //       }
+      //     })
+      // .then(function(data) {
+      //   if (data[0]) {
+      //     for (const key in data[0].dataValues) {
+      //       object.portfolio.push(data[0].dataValues[key]);
+      //     }
+      //   }
+      //   // data.forEach(element => {
+      //   // console.log(element[0]);
+      //   // object.portfolio.push(element[0]);
+      //   // });
+      // })
+      // });
+      .then(function() {
+        res.json(usersArray);
+      });
+    // console.log(usersArray);
+    // });
+  });
+
+  app.post("/api/allTransactions", function(req, res) {
+    console.log(req.body.id);
+  });
 
   // getting user by email and password:
   app.post("/api/user/loginid", function(req, res) {
