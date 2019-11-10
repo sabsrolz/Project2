@@ -1,5 +1,6 @@
 $(".sidenav").sidenav();
 $("select").formSelect();
+$(".modal").modal();
 
 $.get("/api/");
 
@@ -14,6 +15,7 @@ if (sessionStorage.getItem("stockAppUser") > 0) {
     userData = data;
   });
 }
+
 $("#tickerForm").on("submit", function() {
   event.preventDefault();
   const company = $("#stockSearch")
@@ -76,27 +78,43 @@ $("#tickerForm").on("submit", function() {
       $("#stockInfo").removeClass("hide");
       $("#chartContainer").CanvasJSChart(options);
     });
+    $("#transactionSubmitBtn").on("click", function() {
+      event.preventDefault();
+      $(".modal").modal("open");
+      $("#transactionConfirmName").text(data.companyName);
+      $("#transactionConfirmNumber").text($("#transactionAmount").val());
+      $("#transactionConfirmType").text($("#transactionType").val());
+      $("#transactionConfirmPrice").text(data.currentStockPrice);
+      $("#transactionConfirmTotal").text(
+        data.currentStockPrice * $("#transactionAmount").val()
+      );
+    });
   }).catch(function(error) {
     console.log(error);
   });
 });
 
+$("#confirmSubmit").on("click", function() {
+  event.preventDefault();
+  $("#transactionForm").submit();
+});
+
 $("#transactionForm").on("submit", function() {
   event.preventDefault();
-  console.log(userData);
-  // userid in sessionstorage
-  const tickerData = $("#stockInfo").data();
-
-  const body = {
-    numShares: $("#transactionAmount").val(),
-    transactionType: $("#transactionType").val(),
-    currentPrice: tickerData.price,
-    companyName: tickerData.name,
-    ticker: tickerData.ticker,
-    fundsAvailable: userData.fundsAvailable
-  };
-  console.log(body);
   if (userData) {
+    console.log(userData);
+    // userid in sessionstorage
+    const tickerData = $("#stockInfo").data();
+
+    const body = {
+      numShares: $("#transactionAmount").val(),
+      transactionType: $("#transactionType").val(),
+      currentPrice: tickerData.price,
+      companyName: tickerData.name,
+      ticker: tickerData.ticker,
+      fundsAvailable: userData.fundsAvailable
+    };
+    console.log(body);
     $.post(`/api/transaction/${userData.id}`, body, function(data) {
       console.log(data);
     });

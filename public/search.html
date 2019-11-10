@@ -100,11 +100,11 @@
                     min="1"
                     id="transactionAmount"
                   />
-                  <label>Choose an Amount:</label>
+                  <label for="transactionAmount">Choose an Amount:</label>
                 </div>
                 <button
                   id="transactionSubmitBtn"
-                  type="submit"
+                  type="button"
                   class="btn blue-grey darken-3 waves-effect waves-light"
                 >
                   <span>Go</span>
@@ -113,6 +113,64 @@
               </div>
             </form>
           </div>
+        </div>
+      </div>
+
+      <div id="modal" class="modal">
+        <div class="modal-content">
+          <div class="container">
+            <h4>Confirm transaction</h4>
+
+            Please confirm transaction details:
+            <br />
+            <table class="table">
+              <tr>
+                <th>
+                  Stock Name
+                </th>
+                <td id="transactionConfirmName"></td>
+              </tr>
+              <tr>
+                <th>
+                  Stocks Traded
+                </th>
+                <td id="transactionConfirmNumber"></td>
+              </tr>
+              <tr>
+                <th>
+                  Current Price
+                </th>
+                <td id="transactionConfirmPrice"></td>
+              </tr>
+              <tr>
+                <th>
+                  Transaction Type
+                </th>
+                <td id="transactionConfirmType"></td>
+              </tr>
+              <tr>
+                <th>
+                  Total Sale
+                </th>
+                <td id="transactionConfirmTotal"></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            id="confirmCancel"
+            type="button"
+            class="btn blue-grey darken-3 modal-close"
+          >
+            Cancel
+          </button>
+          <button
+            id="confirmSubmit"
+            class="modal-close btn blue-grey darken-3 waves-effect"
+          >
+            Confirm!
+          </button>
         </div>
       </div>
     </main>
