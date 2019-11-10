@@ -211,6 +211,11 @@ module.exports = function(app) {
 
   app.post("/api/allTransactions", function(req, res) {
     console.log("req.body.id: " + req.body.id);
+    db.Transactions.findAll({ where: { userId: req.body.id.toString() } }).then(
+      function(result, err) {
+        res.json(result);
+      }
+    );
   });
 
   // get user by email and password:
