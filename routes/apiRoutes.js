@@ -121,43 +121,42 @@ module.exports = function(app) {
         console.log("you dont have enough funds to complete transaction");
       }
     } else {
-      db.transactions
-        .findAndCountAll({
-          include: [
-            {
-              ticker: ticker
-            }
-          ],
-          where: {
-            userId: userId
+      db.Transactions.findAndCountAll({
+        // sell not functioning atm
+        include: [
+          {
+            ticker: ticker
           }
-        })
-        .then(function(err, result) {
-          if (err) throw err;
-          console.log(result);
-          if (numShares >= result.count) {
-            updatedFunds = currentFunds + transTotal;
-            transaction = {
-              companyName: companyName,
-              ticker: ticker,
-              userId: userId,
-              sharesTraded: 0 - numShares,
-              transactionPrice: transTotal
-            };
-            updateUser(updatedFunds); // corrected from updatedFunds(updatedFunds)
-            db.transactions
-              .create({
-                transaction
-              })
-              .then(function(result, err) {
-                if (err) throw err;
-                // console.log(result);
-                console.log("transaction was successfully recorded");
-              });
-          } else {
-            console.log("Insufficient shares to complete transaction");
-          }
-        });
+        ],
+        where: {
+          userId: userId
+        }
+      }).then(function(err, result) {
+        if (err) throw err;
+        console.log(result);
+        if (numShares >= result.count) {
+          updatedFunds = currentFunds + transTotal;
+          transaction = {
+            companyName: companyName,
+            ticker: ticker,
+            userId: userId,
+            sharesTraded: 0 - numShares,
+            transactionPrice: transTotal
+          };
+          updateUser(updatedFunds); // corrected from updatedFunds(updatedFunds)
+          db.transactions
+            .create({
+              transaction
+            })
+            .then(function(result, err) {
+              if (err) throw err;
+              // console.log(result);
+              console.log("transaction was successfully recorded");
+            });
+        } else {
+          console.log("Insufficient shares to complete transaction");
+        }
+      });
     }
     // });
   });
@@ -211,7 +210,7 @@ module.exports = function(app) {
   });
 
   app.post("/api/allTransactions", function(req, res) {
-    console.log(req.body.id);
+    console.log("req.body.id: " + req.body.id);
   });
 
   // getting user by email and password:
