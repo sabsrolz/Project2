@@ -40,7 +40,7 @@ $("#tickerForm").on("submit", function() {
     $.ajax({
       url: `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=${tickerData.ticker}&outputsize=compact&interval=60min&apikey=L9NQIQI6RSM70ZCL`
     }).then(function(data) {
-      console.log(data);
+      // console.log(data);
       const dataPoints = [];
 
       const options = {
@@ -74,7 +74,7 @@ $("#tickerForm").on("submit", function() {
         });
       }
       if (dataPoints.length > 0) {
-        console.log(dataPoints);
+        // console.log(dataPoints);
         $("#chartContainer").removeClass("hide");
         $("#chartContainer").CanvasJSChart(options);
       }
@@ -104,7 +104,7 @@ $("#confirmSubmit").on("click", function() {
 
 function formSubmit() {
   if (userData) {
-    console.log(userData);
+    // console.log(userData);
     // userid in sessionstorage
     const tickerData = $("#stockInfo").data();
 
@@ -116,9 +116,10 @@ function formSubmit() {
       ticker: tickerData.ticker,
       fundsAvailable: userData.fundsAvailable
     };
-    console.log(body);
+    // console.log(body);
     $.post(`/api/transaction/${userData.id}`, body, function(data) {
-      console.log(data);
+      // console.log(data);
+      location.reload();
     });
   } else {
     alert("You are not logged in!");

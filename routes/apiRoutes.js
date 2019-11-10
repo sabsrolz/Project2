@@ -51,35 +51,45 @@ module.exports = function(app) {
   //POST ROUTE when user purchases/sells # of shares at $ price
   app.post("/api/transaction/:user", function(req, res) {
     // put calls
-    function updateUser(x) {
-      app.put("/api/transaction/:user", function(req, res) {
-        db.User.update(
-          {
-            fundsAvailable: x
-          },
-          {
-            where: {
-              userId: req.params.user
-            }
+    function updateUser(newfunds, targetUserId) {
+      // console.log("updating funds...");
+      // console.log(newfunds);
+      // console.log(typeof targetUserId);
+      // app.put("/api/transaction/", function(req, res) { // THIS DOES NOT ACTUALLY RUN A QUERY <-----
+      db.User.update(
+        {
+          fundsAvailable: newfunds
+        },
+        {
+          where: {
+            id: parseInt(targetUserId)
           }
-        ).then(function(data, err) {
-          if (err) throw err;
-          console.log(data);
-          res.json(data);
-        });
+        }
+      ).then(function(data, err) {
+        if (err) console.log("error" + err);
+        // console.log("updated fundsAvailable");
+        // console.log(data);
+        // if (data) console.log(data);
+        // res.json(data);
       });
+      // });
     }
-    //req.body = {numShares, buy/sell}
+    //req.body = all of this stuff here ------
+
     const numShares = req.body.numShares;
     const transactionType = req.body.transactionType;
     const currentPrice = req.body.currentPrice;
     const companyName = req.body.companyName;
     const ticker = req.body.ticker;
+    // -----------------
+
     const userId = req.params.user;
     const transTotal = numShares * currentPrice;
     const currentFunds = req.body.fundsAvailable;
     let transaction;
     let updatedFunds;
+
+    // this is already available, don't query
     // db.User.findAll({
     //   where: {
     //     id: userId
@@ -89,10 +99,10 @@ module.exports = function(app) {
     // res.json(result);
     // console.log(result);
     // console.log(currentFunds);
+
     if (transactionType === "buy") {
       if (currentFunds >= transTotal) {
         updatedFunds = currentFunds - transTotal;
-        updateUser(updatedFunds);
         transaction = {
           companyName: companyName,
           ticker: ticker,
@@ -100,9 +110,11 @@ module.exports = function(app) {
           sharesTraded: numShares,
           transactionPrice: transTotal
         };
+
         db.Transactions.create(transaction).then(function(result, err) {
+          updateUser(updatedFunds, userId);
           if (err) throw err;
-          console.log(result);
+          // console.log("RESULT: " + result);
           console.log("transaction was successfully recorded");
         });
       } else {
@@ -139,7 +151,7 @@ module.exports = function(app) {
               })
               .then(function(err, result) {
                 if (err) throw err;
-                console.log(result);
+                // console.log(result);
                 console.log("transaction was successfully recorded");
               });
           } else {
