@@ -1,4 +1,4 @@
-const db = require("../models");
+// const db = require("../models");
 const path = require("path");
 
 module.exports = function(app) {
@@ -15,7 +15,7 @@ module.exports = function(app) {
   });
 
   // Render 404 page for any unmatched routes
-  app.get("*", function(req, res) {
-    res.json({ message: err.message, error: err });
-  });
+  // app.get("*", function(req, res) {
+  //   res.json(404);
+  // });
 };

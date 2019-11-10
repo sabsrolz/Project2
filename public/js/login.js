@@ -4,44 +4,45 @@ $("#loginForm").on("submit", function() {
   event.preventDefault();
 
   const login = {
-    email: $("#signupEmail").val(),
-    password: $("#signupPassword").val()
+    loginEmail: $("#loginEmail").val(),
+    loginPassword: $("#loginPass").val()
   };
-  $.get("api/getAllUsers", function(data) {
-    let validLogin = false;
-    for (const key in data) {
-      const element = data[key];
-      // if (data.email === login.email
-      // && data.password === login.password){
-      // validLogin = true
-      //
-      // }
+  let userId = -1;
+  $.post("api/user/loginid", login, function(data) {
+    if (data.id) {
+      userId = data.id;
+    }
+    sessionStorage.setItem("stockAppUser", userId);
+    if (sessionStorage.getItem("stockAppUser") > 0) {
+      console.log("logged in!");
+    } else {
+      console.log("invalid credentials");
     }
   });
-  // login conversation here
-  localStorage.setItem("stockAppUser", login);
 });
 
 $("#signupForm").on("submit", function() {
   event.preventDefault();
   const newUser = {
-    firstname: $("#signupFirstName").val(),
-    lastname: $("#signupLastName").val(),
+    firstName: $("#signupFirstName").val(),
+    lastName: $("#signupLastName").val(),
     email: $("#signupEmail").val(),
-    password: $("#signupPassword").val()
+    password: $("#signupPass").val()
   };
-  $.post("/api/signup", newUser);
+  $.post("/api/user", newUser);
   // sign up conversation here
-  localStorage
-    .setItem("stockAppUser", {
-      email: newUser.email,
-      password: newUser.password
-    })
-    .then(function() {
-      $.get("/api/");
-    });
+
+  sessionStorage.setItem("stockAppUser", {
+    email: newUser.email,
+    password: newUser.password
+  });
+
+  $.get("/api/user/login", newUser, function(data) {
+    console.log(data);
+  });
 });
 
+// switches between two forms
 $("#showSignup").on("click", function() {
   event.preventDefault();
   $("#loginForm").addClass("hide");
