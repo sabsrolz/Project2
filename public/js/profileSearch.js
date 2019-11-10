@@ -2,6 +2,10 @@ $(".sidenav").sidenav();
 
 $("form").on("submit", function() {
   event.preventDefault();
+
+  // clear table before new search
+  $("#tbody").html("<th>Stock</th><th>Number Owned</th><th>Current Value</th>");
+
   // search user by name to get id
   $.post("/api/user/namecheck", {
     name: $("#profileSearch")
