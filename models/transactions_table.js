@@ -6,7 +6,7 @@ module.exports = function(sequelize, DataTypes) {
       ticker: DataTypes.STRING,
       userId: DataTypes.STRING,
       sharesTraded: DataTypes.INTEGER,
-      transactionPrice: DataTypes.DECIMAL
+      transactionPrice: DataTypes.DECIMAL(10, 2)
     },
     { timestamps: false }
   );

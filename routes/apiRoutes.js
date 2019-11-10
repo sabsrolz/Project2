@@ -50,6 +50,25 @@ module.exports = function(app) {
   });
   //POST ROUTE when user purchases/sells # of shares at $ price
   app.post("/api/transaction/:user", function(req, res) {
+    // put calls
+    function updateUser(x) {
+      app.put("/api/transaction/:user", function(req, res) {
+        db.User.update(
+          {
+            fundsAvailable: x
+          },
+          {
+            where: {
+              userId: req.params.user
+            }
+          }
+        ).then(function(data, err) {
+          if (err) throw err;
+          console.log(data);
+          res.json(data);
+        });
+      });
+    }
     //req.body = {numShares, buy/sell}
     const numShares = req.body.numShares;
     const transactionType = req.body.transactionType;
@@ -69,7 +88,7 @@ module.exports = function(app) {
     //   if (err) throw err;
     // res.json(result);
     // console.log(result);
-    console.log(currentFunds);
+    // console.log(currentFunds);
     if (transactionType === "buy") {
       if (currentFunds >= transTotal) {
         updatedFunds = currentFunds - transTotal;
@@ -81,7 +100,7 @@ module.exports = function(app) {
           sharesTraded: numShares,
           transactionPrice: transTotal
         };
-        db.Transactions.create(transaction).then(function(err, result) {
+        db.Transactions.create(transaction).then(function(result, err) {
           if (err) throw err;
           console.log(result);
           console.log("transaction was successfully recorded");
@@ -110,7 +129,7 @@ module.exports = function(app) {
               companyName: companyName,
               ticker: ticker,
               userId: userId,
-              sharesTraded: numShares,
+              sharesTraded: 0 - numShares,
               transactionPrice: transTotal
             };
             updateUser(updatedFunds); // corrected from updatedFunds(updatedFunds)
@@ -131,25 +150,7 @@ module.exports = function(app) {
     // });
   });
 
-  //put calls
-  function updateUser(x) {
-    app.put("/api/transaction/:user", function(req, res) {
-      db.user
-        .updateOne(
-          {
-            fundsAvailable: x
-          },
-          {
-            userId: req.params.user
-          }
-        )
-        .then(function(data, err) {
-          if (err) throw err;
-          console.log(data);
-          res.json(data);
-        });
-    });
-  }
+  // }
 
   // creating a new user:
   app.post("/api/user", function(req, res) {
