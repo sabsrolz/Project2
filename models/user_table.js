@@ -11,7 +11,7 @@ module.exports = function(sequelize, DataTypes) {
       lastName: DataTypes.STRING,
       email: DataTypes.STRING,
       password: DataTypes.STRING,
-      fundsAvailable: DataTypes.DECIMAL
+      fundsAvailable: DataTypes.DECIMAL(10, 2)
     },
     { timestamps: false }
   );
