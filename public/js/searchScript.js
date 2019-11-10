@@ -11,7 +11,7 @@ const userId = {
 };
 if (sessionStorage.getItem("stockAppUser") > 0) {
   $.post("api/user/idcheck", userId, function(data) {
-    console.log(data);
+    // console.log(data);
     userData = data;
   });
 }
@@ -31,16 +31,16 @@ $("#tickerForm").on("submit", function() {
     $("#stockInfo").data("name", data.companyName);
     $("#stockInfo").data("ticker", data.ticker);
     $("#stockInfo").data("price", data.currentStockPrice);
-    console.log(data);
+    // console.log(data);
 
     // following section for CHART only:
     const tickerData = $("#stockInfo").data();
-    console.log(tickerData.ticker);
-    console.log(tickerData.price);
+    // console.log(tickerData.ticker);
+    // console.log(tickerData.price);
     $.ajax({
       url: `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=${tickerData.ticker}&outputsize=compact&interval=60min&apikey=L9NQIQI6RSM70ZCL`
     }).then(function(data) {
-      // console.log(data);
+      console.log(data);
       const dataPoints = [];
 
       const options = {
@@ -67,16 +67,18 @@ $("#tickerForm").on("submit", function() {
       };
 
       for (const element in data["Monthly Time Series"]) {
+        // console.log(data["Monthly Time Series"][element]["4. close"]);
         dataPoints.push({
           x: new Date(element),
-          y: parseFloat(data["Monthly Time Series"][element]["4.close"])
+          y: parseFloat(data["Monthly Time Series"][element]["4. close"])
         });
       }
       if (dataPoints.length > 0) {
+        console.log(dataPoints);
         $("#chartContainer").removeClass("hide");
+        $("#chartContainer").CanvasJSChart(options);
       }
       $("#stockInfo").removeClass("hide");
-      $("#chartContainer").CanvasJSChart(options);
     });
     $("#transactionSubmitBtn").on("click", function() {
       event.preventDefault();
@@ -96,11 +98,11 @@ $("#tickerForm").on("submit", function() {
 
 $("#confirmSubmit").on("click", function() {
   event.preventDefault();
-  $("#transactionForm").submit();
+  $("#transactionForm");
+  formSubmit();
 });
 
-$("#transactionForm").on("submit", function() {
-  event.preventDefault();
+function formSubmit() {
   if (userData) {
     console.log(userData);
     // userid in sessionstorage
@@ -121,4 +123,4 @@ $("#transactionForm").on("submit", function() {
   } else {
     alert("You are not logged in!");
   }
-});
+}
