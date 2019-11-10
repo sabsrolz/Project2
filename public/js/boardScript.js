@@ -4,9 +4,13 @@ $(".sidenav").sidenav();
 
 // Get data of users and total of asset values (probably on routing side ) // findandcountall does this for us
 
+const usersArray = [];
 $.get("api/allUsers", function(data) {
-  const usersArray = data;
+  data.forEach(element => {
+    usersArray.push(element);
+  });
   console.log(usersArray);
+}).then(function() {
   usersArray.forEach(userObject => {
     // console.log(userObject.id);
     $.post("/api/allTransactions", userObject);
