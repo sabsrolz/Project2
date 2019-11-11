@@ -28,12 +28,8 @@ module.exports = function(app) {
         // $("#stockInfoName").text("Name: " + ticker);
         //console.log(response.data["bestMatches"][0]["1. symbol"]);
         ticker = response.data["bestMatches"][0]["1. symbol"];
-<<<<<<< HEAD
         const company_name = response.data["bestMatches"][0]["2. name"];
-        const queryURLIntraday = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${ticker}&interval=1min&apikey=8HGF9L0ALM5LPNX5`;
-=======
         const queryURLIntraday = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${ticker}&interval=1min&apikey=${api_key}`;
->>>>>>> 482f9a7041723fdfdb7dd9db6cf28731045fd66f
         axios
           .get(queryURLIntraday)
           .then(function(response) {
@@ -65,13 +61,9 @@ module.exports = function(app) {
   });
   //get route to retrieve count of stocks that a user has (for sell)
   app.get("/api/portfolio/:user", function(req, res) {
-<<<<<<< HEAD
     console.log("route hit");
     const userId = req.params.user;
     const userPortfolio = { userId: userId };
-=======
-    const userPortfolio = { userId: req.params.user };
->>>>>>> 482f9a7041723fdfdb7dd9db6cf28731045fd66f
     const stocks = {};
     // "userPortfolio": {"userId": 1,
     // "stocks": {"MORN":2, "FIT":10}}
