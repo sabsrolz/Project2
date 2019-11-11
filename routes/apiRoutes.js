@@ -58,14 +58,14 @@ module.exports = function(app) {
       });
   });
   //get route to retrieve count of stocks that a user has (for sell)
-  app.get("api/portfolio/:user", function(req, res) {
+  app.get("/api/portfolio/:user", function(req, res) {
     const userPortfolio = { userId: req.params.user };
     const stocks = {};
     // "userPortfolio": {"userId": 1,
     // "stocks": {"MORN":2, "FIT":10}}
     db.Transactions.findAll({
       where: {
-        id: userId.toString()
+        userId: userId.toString()
       }
     }).then(function(result, err) {
       console.log(result);
@@ -197,6 +197,8 @@ module.exports = function(app) {
       .then(function(result, err) {
         for (const user in result) {
           const userObject = {
+            firstName: result[user].firstName,
+            lastName: result[user].lastName,
             id: result[user].id.toString(),
             funds: result[user].fundsAvailable,
             portfolio: {},
