@@ -17,20 +17,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Profile Search</title>
   </head>
-  <body>
+  <body class="blue-grey lighten-4">
     <header>
       <nav class="indigo darken-3 z-depth-3">
         <div class="container">
           <div class="nav-wrapper">
-            <a href="#!" class="brand-logo">>Logo/title</a>
+            <a href="#!" class="brand-logo">Stock Sim</a>
             <a href="#" data-target="mobile-navbar" class="sidenav-trigger"
               ><i class="material-icons">menu</i></a
             >
             <ul class="right hide-on-med-and-down">
               <li><a href="/top">Home</a></li>
-              <li><a href="#">#</a></li>
-              <li><a href="#">#</a></li>
-              <li><a href="#">#</a></li>
+              <li><a href="/search">Stocks</a></li>
+              <li><a href="/profiles">Profiles</a></li>
+              <li><a href="/index.html">Log in</a></li>
             </ul>
           </div>
         </div>
@@ -39,17 +39,17 @@
       <ul class="sidenav blue-grey darken-1" id="mobile-navbar">
         <div class="container">
           <li><a href="/top">Home</a></li>
-          <li><a href="#">#</a></li>
-          <li><a href="#">#</a></li>
-          <li><a href="#">#</a></li>
+          <li><a href="/search">Stocks</a></li>
+          <li><a href="/profiles">Profiles</a></li>
+          <li><a href="/index.html">Log in</a></li>
         </div>
       </ul>
     </header>
-    <main class="blue-grey lighten-4">
+    <main>
       <div class="container">
         <div class="card hoverable">
           <div class="container">
-            <h3>User Profile</h3>
+            <h3>Search for a user</h3>
             <form id="profileSearchForm">
               <div class="input-field">
                 <input
@@ -73,23 +73,30 @@
         </div>
         <div class="row">
           <div id="profileInfo" class="card hoverable col s12 hide">
-            <h5>
-              (Profile Info Here):
-            </h5>
             <h5 id="profileName">
               Name:
             </h5>
             <h5 id="portfolio">
               Stock Portfolio:
             </h5>
+            <table
+              id="portfolioTable"
+              class="striped hoverable responsive-table"
+            >
+              <tbody id="tbody">
+                <tr>
+                  <th>Stock</th>
+                  <th>Number Owned</th>
+                  <th>Current Value</th>
+                </tr>
+              </tbody>
+            </table>
+            <h5 id="profileFunds">
+              Funds:
+            </h5>
             <h5 id="profileNetWorth">
               Net Worth:
             </h5>
-            <div
-              id="chartContainer"
-              class="card hoverable"
-              style="height: 300px; width: 100%;"
-            ></div>
           </div>
         </div>
       </div>
@@ -101,6 +108,5 @@
     </footer>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="./js/profileSearch.js"></script>
-    <script src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script>
   </body>
 </html>

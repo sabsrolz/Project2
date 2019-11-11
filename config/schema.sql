@@ -1,17 +1,7 @@
 DROP DATABASE IF EXISTS StockDB;
 CREATE DATABASE StockDB;
+
 USE StockDB;
 
-CREATE TABLE users (
-    id INT NOT NULL AUTO_INCREMENT,
-    username VARCHAR(255)NOT NULL,
-    password VARCHAR(255)NOT NULL,
-    money INT NOT NULL,
-	PRIMARY KEY(ID)
-);
-
-CREATE TABLE transactions (
-	id INT NOT NULL,
-    transaction INT NOT NULL,
-    ticker VARCHAR(255) NOT NULL
-);
+SELECT * FROM Users;
+SELECT * FROM Transactions;

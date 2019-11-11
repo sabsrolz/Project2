@@ -19,20 +19,20 @@
     <title>Ticker Search</title>
   </head>
 
-  <body>
+  <body class="blue-grey lighten-4">
     <header>
       <nav class="indigo darken-3 z-depth-3">
         <div class="container">
           <div class="nav-wrapper">
-            <a href="#!" class="brand-logo">>Logo/title</a>
+            <a href="#!" class="brand-logo">Stock Sim</a>
             <a href="#" data-target="mobile-navbar" class="sidenav-trigger"
               ><i class="material-icons">menu</i></a
             >
             <ul class="right hide-on-med-and-down">
-              <li><a href="#">#</a></li>
-              <li><a href="#">#</a></li>
-              <li><a href="#">#</a></li>
-              <li><a href="#">#</a></li>
+              <li><a href="/top">Home</a></li>
+              <li><a href="/search">Stocks</a></li>
+              <li><a href="/profiles">Profiles</a></li>
+              <li><a href="/index.html">Log in</a></li>
             </ul>
           </div>
         </div>
@@ -40,27 +40,22 @@
 
       <ul class="sidenav blue-grey darken-1" id="mobile-navbar">
         <div class="container">
-          <li><a href="#">#</a></li>
-          <li><a href="#">#</a></li>
-          <li><a href="#">#</a></li>
-          <li><a href="#">#</a></li>
+          <li><a href="/top">Home</a></li>
+          <li><a href="/search">Stocks</a></li>
+          <li><a href="/profiles">Profiles</a></li>
+          <li><a href="/index.html">Log in</a></li>
         </div>
       </ul>
     </header>
-    <main class="blue-grey lighten-4">
+    <main>
       <div class="container">
         <div class="card hoverable">
           <div class="container">
-            <h3>Search for a stock</h3>
+            <h3>Search for a company</h3>
             <form id="tickerForm">
               <div class="input-field">
-                <input
-                  class="validate"
-                  required
-                  type="text"
-                  id="tickerSearch"
-                />
-                <label for="tickerSearch">Stock Ticker</label>
+                <input class="validate" required type="text" id="stockSearch" />
+                <label for="stockSearch">Company Name</label>
                 <button
                   id="tickerSubmitBtn"
                   type="submit"
@@ -80,9 +75,6 @@
         ></div>
         <div class="row">
           <div id="stockInfo" class="card hoverable col s12 hide">
-            <h5>
-              (Stock Info Here):
-            </h5>
             <h5 id="stockInfoName">
               Name:
             </h5>
@@ -95,7 +87,7 @@
             <form id="transactionForm">
               <div class="container">
                 <div class="input-field">
-                  <select name="transactionType">
+                  <select id="transactionType" name="transactionType">
                     <option name="transactionType" value="buy">Buy</option>
                     <option name="transactionType" value="sell">Sell</option>
                   </select>
@@ -106,13 +98,14 @@
                     required
                     class="validate"
                     type="number"
+                    min="1"
                     id="transactionAmount"
                   />
-                  <label>Choose an Amount:</label>
+                  <label for="transactionAmount">Choose an Amount:</label>
                 </div>
                 <button
                   id="transactionSubmitBtn"
-                  type="submit"
+                  type="button"
                   class="btn blue-grey darken-3 waves-effect waves-light"
                 >
                   <span>Go</span>
@@ -121,6 +114,64 @@
               </div>
             </form>
           </div>
+        </div>
+      </div>
+
+      <div id="modal" class="modal">
+        <div class="modal-content">
+          <div class="container">
+            <h4>Confirm transaction</h4>
+
+            Please confirm transaction details:
+            <br />
+            <table class="table">
+              <tr>
+                <th>
+                  Stock Name
+                </th>
+                <td id="transactionConfirmName"></td>
+              </tr>
+              <tr>
+                <th>
+                  Stocks Traded
+                </th>
+                <td id="transactionConfirmNumber"></td>
+              </tr>
+              <tr>
+                <th>
+                  Current Price
+                </th>
+                <td id="transactionConfirmPrice"></td>
+              </tr>
+              <tr>
+                <th>
+                  Transaction Type
+                </th>
+                <td id="transactionConfirmType"></td>
+              </tr>
+              <tr>
+                <th>
+                  Total Sale
+                </th>
+                <td id="transactionConfirmTotal"></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            id="confirmCancel"
+            type="button"
+            class="btn blue-grey darken-3 modal-close"
+          >
+            Cancel
+          </button>
+          <button
+            id="confirmSubmit"
+            class="modal-close btn blue-grey darken-3 waves-effect"
+          >
+            Confirm!
+          </button>
         </div>
       </div>
     </main>

@@ -2,41 +2,46 @@ $(".sidenav").sidenav();
 
 // To do:
 
-// Get data of users and total of asset values (probably on routing side)
+// Get data of users and total of asset values (probably on routing side ) // findandcountall does this for us
 
-// Display on table, and sort by net worth (https://blog.niklasottosson.com/javascript/jquery-sort-table-rows-on-column-value/)
+const usersArray = [];
+$.get("api/allUsers", function(data) {
+  data.forEach(element => {
+    usersArray.push(element);
+  });
+  console.log(usersArray);
+}).then(function() {
+  usersArray.forEach(userObject => {
+    // console.log(userObject.id);
+    $.post("/api/allTransactions", userObject);
+  });
+});
 
-function sortTable() {
-  const rows = $("#leaderboard tbody tr").get();
-  rows.sort(function(first, second) {
-    let A = $(first)
-      .children("td")
-      .eq(3)
-      .text()
-      .toUpperCase();
-    let B = $(second)
-      .children("td")
-      .eq(3)
-      .text()
-      .toUpperCase();
-    return B - A;
-  });
-  rows.forEach(row => {
-    $("#leaderboard")
-      .children("tbody")
-      .append(row);
-  });
-}
-sortTable();
+const rows = $("#leaderboard tbody tr").get();
+rows.sort(function(first, second) {
+  let A = $(first)
+    .children("td")
+    .eq(3)
+    .text()
+    .toUpperCase();
+  let B = $(second)
+    .children("td")
+    .eq(3)
+    .text()
+    .toUpperCase();
+  return B - A;
+});
+rows.forEach(row => {
+  $("#leaderboard")
+    .children("tbody")
+    .append(row);
+});
 
-function rankings() {
-  const rows = $("#leaderboard tbody tr").get();
-  console.log(rows);
-  rows.forEach(row => {
-    $(row)
-      .children()
-      .eq(0)
-      .text(row.rowIndex);
-  });
-}
-rankings();
+const rowranks = $("#leaderboard tbody tr").get();
+console.log(rowranks);
+rowranks.forEach(row => {
+  $(row)
+    .children()
+    .eq(0)
+    .text(row.rowIndex);
+});
