@@ -16,7 +16,7 @@ module.exports = function(app) {
     //   .format("YYYY-MM-DD HH:mm:00");
     // console.log(currentTime);
     //console.log(company);
-    const api_key = "L9NQIQI6RSM70ZCL"; //send to env
+    const api_key = process.env; //send to env
     const query_ticker = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${company}&apikey=${api_key}`;
     axios
       .get(query_ticker)
@@ -32,7 +32,7 @@ module.exports = function(app) {
             // console.log(response.data["Time Series (1min)"]);
             const timeSeries = response.data["Time Series (1min)"];
             close_minutely = Object.values(timeSeries)[0]["4. close"];
-            //console.log(close_minutely);
+            console.log(close_minutely);
 
             // Sean : "I didn't realize it was multiplying by 5 woops"
             // total_price = num_shares * parseFloat(close_minutely);
