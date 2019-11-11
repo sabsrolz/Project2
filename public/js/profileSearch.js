@@ -23,14 +23,16 @@ $("form").on("submit", function() {
       networth += parseFloat(data.fundsAvailable);
     }
     $.post("/api/allTransactions", data, function(transactions) {
-      transactions.forEach(element => {
+      for (let i = 0; i < transactions.length; i++) {
+        const element = transactions[i];
+
         // console.log(element);
         portfolio[`${element.companyName}`] = 0;
         portfolio[element.companyName] += parseInt(element.sharesTraded);
-      });
+      }
     }).then(function() {
-      console.log(portfolio);
-      console.log(networth);
+      // console.log(portfolio);
+      // console.log(networth);
       for (const stock in portfolio) {
         // console.log(stock);
         if (portfolio[stock] != 0) {

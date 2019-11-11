@@ -1,5 +1,6 @@
 var db = require("../models");
 const axios = require("axios");
+require("dotenv").config();
 // const moment = require("moment");
 console.log("api routes connected");
 
@@ -17,7 +18,8 @@ module.exports = function(app) {
     //   .format("YYYY-MM-DD HH:mm:00");
     // console.log(currentTime);
     //console.log(company);
-    const api_key = process.env; //send to env
+    const api_key = process.env.api_key; //send to env
+
     const query_ticker = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${company}&apikey=${api_key}`;
     axios
       .get(query_ticker)
@@ -26,12 +28,17 @@ module.exports = function(app) {
         // $("#stockInfoName").text("Name: " + ticker);
         //console.log(response.data["bestMatches"][0]["1. symbol"]);
         ticker = response.data["bestMatches"][0]["1. symbol"];
+<<<<<<< HEAD
         const company_name = response.data["bestMatches"][0]["2. name"];
         const queryURLIntraday = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${ticker}&interval=1min&apikey=8HGF9L0ALM5LPNX5`;
+=======
+        const queryURLIntraday = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${ticker}&interval=1min&apikey=${api_key}`;
+>>>>>>> 482f9a7041723fdfdb7dd9db6cf28731045fd66f
         axios
           .get(queryURLIntraday)
           .then(function(response) {
             // console.log(response.data["Time Series (1min)"]);
+            console.log(response);
             const timeSeries = response.data["Time Series (1min)"];
             close_minutely = Object.values(timeSeries)[0]["4. close"];
             console.log(close_minutely);
@@ -58,9 +65,13 @@ module.exports = function(app) {
   });
   //get route to retrieve count of stocks that a user has (for sell)
   app.get("/api/portfolio/:user", function(req, res) {
+<<<<<<< HEAD
     console.log("route hit");
     const userId = req.params.user;
     const userPortfolio = { userId: userId };
+=======
+    const userPortfolio = { userId: req.params.user };
+>>>>>>> 482f9a7041723fdfdb7dd9db6cf28731045fd66f
     const stocks = {};
     // "userPortfolio": {"userId": 1,
     // "stocks": {"MORN":2, "FIT":10}}
@@ -221,9 +232,11 @@ module.exports = function(app) {
       .then(function(result, err) {
         for (const user in result) {
           const userObject = {
+            firstName: result[user].firstName,
+            lastName: result[user].lastName,
             id: result[user].id.toString(),
             funds: result[user].fundsAvailable,
-            portfolio: [],
+            portfolio: {},
             netWorth: result[user].fundsAvailable
           };
           usersArray.push(userObject);
@@ -256,6 +269,12 @@ module.exports = function(app) {
       });
     // console.log(usersArray);
     // });
+  });
+
+  app.get("/api/allUserTransactions", function(req, res) {
+    db.Transactions.findAll().then(function(result, err) {
+      res.json(result);
+    });
   });
 
   app.post("/api/allTransactions", function(req, res) {

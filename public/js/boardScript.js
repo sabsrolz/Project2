@@ -4,16 +4,50 @@ $(".sidenav").sidenav();
 
 // Get data of users and total of asset values (probably on routing side ) // findandcountall does this for us
 
-const usersArray = [];
-$.get("api/allUsers", function(data) {
-  data.forEach(element => {
-    usersArray.push(element);
-  });
+$.get("api/allUsers", function(userData) {
+  const usersArray = [];
+  const stockData = [];
+
+  for (let i = 0; i < userData.length; i++) {
+    usersArray.push(userData[i]);
+  }
+
   console.log(usersArray);
-}).then(function() {
-  usersArray.forEach(userObject => {
-    // console.log(userObject.id);
-    $.post("/api/allTransactions", userObject);
+
+  $.get("/api/allUserTransactions", function(transactions) {
+    console.log(transactions);
+
+    for (let i = 0; i < transactions.length; i++) {
+      if (!stockData.includes(transactions[i].companyName)) {
+        stockData.push({
+          companyName: transactions[i].companyName
+        });
+      }
+      usersArray[transactions[i].userId - 1].portfolio[
+        `${transactions[i].companyName}`
+      ] = 0;
+    }
+    for (let i = 0; i < transactions.length; i++) {
+      usersArray[transactions[i].userId - 1].portfolio[
+        `${transactions[i].companyName}`
+      ] += transactions[i].sharesTraded;
+    }
+
+    let itemsProcessed = 0;
+    for (let i = 0; i < stockData.length; i++) {
+      $.get(`/api/stock/${stockData[i].companyName}`).then(function(liveData) {
+        stockData[i].currentPrice = liveData.currentStockPrice;
+        itemsProcessed++;
+        if (itemsProcessed === stockData.length) {
+          console.log(stockData);
+          for (let i = 0; i < usersArray.length; i++) {
+            //  I DON'T KNOW HOW TO DO THIS WITHOUT FOR-IN BUT IT'S ASYNC
+            // usersArray.portfolio is an object, we want
+            // foreach in portfolio usersArray.netWorth += portfolio.ELEMENT * stockData[THIS IS AN ARRAY  ヽ(  ⁰Д⁰)ﾉ ]
+          }
+        }
+      });
+    }
   });
 });
 
@@ -38,7 +72,6 @@ rows.forEach(row => {
 });
 
 const rowranks = $("#leaderboard tbody tr").get();
-console.log(rowranks);
 rowranks.forEach(row => {
   $(row)
     .children()

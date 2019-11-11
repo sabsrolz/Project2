@@ -22,6 +22,13 @@ $("#tickerForm").on("submit", function() {
     .val()
     .trim();
 
+<<<<<<< HEAD
+  $.ajax({
+      url: `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${company}&apikey=${api_key}`
+    })
+    .then(function (data) {
+      console.log(data)
+=======
   // fill card with display info, and data for post use
   $.get(`/api/stock/${company}`, function(data) {
     $("#stockInfoName").text("Name: " + data.companyName);
@@ -41,8 +48,12 @@ $("#tickerForm").on("submit", function() {
       url: `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=${tickerData.ticker}&outputsize=compact&interval=60min&apikey=L9NQIQI6RSM70ZCL`
     }).then(function(data) {
       // console.log(data);
+>>>>>>> 91287e7777a404f30b74f122a71c9f71c5e0c54a
       const dataPoints = [];
 
+      axios.get(`api/stock/google`).then(response => {
+        console.log(response)
+      })
       const options = {
         animationEnabled: true,
         titleFontSize: 15,
