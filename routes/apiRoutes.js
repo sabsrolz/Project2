@@ -87,11 +87,13 @@ module.exports = function(app) {
     const transactionType = req.body.transactionType;
     const companyName = req.body.companyName;
     const ticker = req.body.ticker;
+    const currentPrice = req.body.currentPrice;
     // -----------------
 
     const userId = req.params.user;
     const transTotal = numShares * currentPrice;
     const currentFunds = req.body.fundsAvailable;
+
     let transaction;
     let updatedFunds;
 
