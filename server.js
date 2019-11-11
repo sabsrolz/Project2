@@ -40,8 +40,8 @@ if (process.env.NODE_ENV === "test") {
 }
 
 // Starting the server, syncing our models ------------------------------------/
-db.sequelize.sync(syncOptions).then(function() {
-  app.listen(PORT, function() {
+db.sequelize.sync(syncOptions).then(function () {
+  app.listen(PORT, function () {
     console.log(
       "==> 🌎  Listening on port %s. Visit http://localhost:%s/ in your browser.",
       PORT,
@@ -58,13 +58,23 @@ const io = require("socket.io").listen(server);
 users = [];
 connections = [];
 
-app.get("/", function(req, res) {
+app.get("/", function (req, res) {
   res.sendFile(__dirname + "/leaderboard.html");
 });
-io.sockets.on("connection", function(socket) {
+io.sockets.on("connection", function (socket) {
   connections.push("connecter: %s sockets connecterd", connections.lenght);
 
   //disconect
-  connections.splice(connections.indexof(socket), 1);
-  console.log("disconnected %s sockets connected", connections.lenght);
+  socket.on('disconnect', function (data) {
+    connections.splice(connections.indexof(socket), 1);
+    console.log("disconnected %s sockets connected", connections.lenght);
+  })
+  socket.on('send message', function (data) {
+    console.log(data)
+    io.sockets.emit('new message', {
+      msg: data
+    })
+  })
 });
+
+module.exports = io

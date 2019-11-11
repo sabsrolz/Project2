@@ -14,11 +14,9 @@
     />
     <link rel="stylesheet" href="./styles/style.css" />
     <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Home Page</title>
+    <title>Profile Search</title>
   </head>
-
   <body class="blue-grey lighten-4">
     <header>
       <nav class="indigo darken-3 z-depth-3">
@@ -49,76 +47,64 @@
     </header>
     <main>
       <div class="container">
-        <h2>Leaderboard</h2>
-
-        <div class="card">
-          <table id="leaderboard" class="striped hoverable responsive-table">
-            <thead>
-              <tr>
-                <th>Rank</th>
-                <th>Name</th>
-                <th>Funds (USD)</th>
-                <th>Net Worth (USD)</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              <tr>
-                <td>0</td>
-                <td>Jonathan</td>
-                <td>40</td>
-                <td>780.00</td>
-              </tr>
-              <tr>
-                <td>0</td>
-                <td>Alvin</td>
-                <td>120</td>
-                <td>1250.00</td>
-              </tr>
-              <tr>
-                <td>0</td>
-                <td>Alan</td>
-                <td>440</td>
-                <td>1100.00</td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="card hoverable">
+          <div class="container">
+            <h3>Search for a user</h3>
+            <form id="profileSearchForm">
+              <div class="input-field">
+                <input
+                  class="validate"
+                  required
+                  type="text"
+                  id="profileSearch"
+                />
+                <label for="profileSearch">Search by Name</label>
+                <button
+                  id="profileSubmitBtn"
+                  type="submit"
+                  class="btn blue-grey darken-3 waves-effect waves-light"
+                >
+                  <span>search</span>
+                </button>
+                <br /><br />
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="row">
+          <div id="profileInfo" class="card hoverable col s12 hide">
+            <h5 id="profileName">
+              Name:
+            </h5>
+            <h5 id="portfolio">
+              Stock Portfolio:
+            </h5>
+            <table
+              id="portfolioTable"
+              class="striped hoverable responsive-table"
+            >
+              <tbody id="tbody">
+                <th>Stock</th>
+                <th>Number Owned</th>
+                <th>Current Value</th>
+              </tbody>
+            </table>
+            <h5 id="profileFunds">
+              Funds:
+            </h5>
+            <h5 id="profileNetWorth">
+              Net Worth:
+            </h5>
+          </div>
         </div>
       </div>
     </main>
-    <div id="container">
-      <div id="messageArea" class="row">
-        <div class="col-md-4">
-          <div class="well">
-            <h3>Online Users</h3>
-            <ul class="list-group" id="users"></ul>
-          </div>
-        </div>
-        <div class="col-md-8">
-          <div class="chat" id="chat"></div>
-          <form id="messageForm">
-            <div class="form-group">
-              <label>Enter Message</label>
-              <textarea class="form-control" id="message"></textarea>
-              <br />
-              <input
-                type="submit"
-                class="btn btn-primary"
-                value="Send Message"
-              />
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-
-    <footer class=" page-footer indigo darken-3">
+    <footer class="page-footer indigo darken-3">
       <div class="container">
         <p>Footer Content</p>
       </div>
     </footer>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-    <script src="./js/boardScript.js"></script>
-    <script src="./js/chat.js"></script>
+    <script src="./js/profileSearch.js"></script>
   </body>
 </html>

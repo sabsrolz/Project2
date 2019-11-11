@@ -1,4 +1,4 @@
-const db = require("../models");
+// const db = require("../models");
 const path = require("path");
 
 module.exports = function(app) {
@@ -14,8 +14,12 @@ module.exports = function(app) {
     res.sendFile(path.join(`${__dirname}/../public/leaderboard.html`));
   });
 
-  // Render 404 page for any unmatched routes
-  app.get("*", function(req, res) {
-    res.render("404");
+  app.get("/profiles", function(req, res) {
+    res.sendFile(path.join(`${__dirname}/../public/profile.html`));
   });
+
+  // Render 404 page for any unmatched routes
+  // app.get("*", function(req, res) {
+  //   res.json(404);
+  // });
 };
