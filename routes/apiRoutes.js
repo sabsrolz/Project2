@@ -5,6 +5,7 @@ console.log("api routes connected");
 
 module.exports = function(app) {
   //GET Route that will display current price of stock to user
+
   app.get("/api/stock/:company", function(req, res) {
     let company = req.params.company;
     let ticker;
@@ -25,6 +26,7 @@ module.exports = function(app) {
         // $("#stockInfoName").text("Name: " + ticker);
         //console.log(response.data["bestMatches"][0]["1. symbol"]);
         ticker = response.data["bestMatches"][0]["1. symbol"];
+        const company_name = response.data["bestMatches"][0]["2. name"];
         const queryURLIntraday = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${ticker}&interval=1min&apikey=8HGF9L0ALM5LPNX5`;
         axios
           .get(queryURLIntraday)
@@ -39,7 +41,7 @@ module.exports = function(app) {
             // console.log(total_price);
 
             const transaction_object = {
-              companyName: company,
+              companyName: company_name,
               ticker: ticker,
               currentStockPrice: close_minutely
             };
@@ -55,18 +57,31 @@ module.exports = function(app) {
       });
   });
   //get route to retrieve count of stocks that a user has (for sell)
-  app.get("api/portfolio/:user", function(req, res) {
-    const userPortfolio = { userId: req.params.user };
+  app.get("/api/portfolio/:user", function(req, res) {
+    console.log("route hit");
+    const userId = req.params.user;
+    const userPortfolio = { userId: userId };
     const stocks = {};
     // "userPortfolio": {"userId": 1,
     // "stocks": {"MORN":2, "FIT":10}}
     db.Transactions.findAll({
       where: {
-        id: userId.toString()
+        userId: userId.toString()
       }
     }).then(function(result, err) {
-      console.log(result);
-      res.json(result);
+      //console.log(result);
+      for (const key in result) {
+        const element = result[key];
+        const trans_ticker = element.dataValues.ticker;
+        const sharesTraded = element.dataValues.sharesTraded;
+        if (trans_ticker in stocks) {
+          stocks[trans_ticker] = stocks[trans_ticker] + sharesTraded;
+        } else {
+          stocks[trans_ticker] = sharesTraded;
+        }
+      }
+      userPortfolio.stocks = stocks;
+      res.json(userPortfolio);
     });
   });
   //POST ROUTE when user purchases/sells # of shares at $ price
@@ -142,21 +157,37 @@ module.exports = function(app) {
       } else {
         console.log("you dont have enough funds to complete transaction");
       }
-    } else {
-      db.Transactions.findAndCountAll({
-        // sell not functioning atm
-        include: [
-          {
-            ticker: ticker
-          }
-        ],
+    } else if (transactionType === "sell") {
+      // $.get(`api/portfolio/${sessionStorage.get("stockAppUser")}`, function(
+      //   data
+      // ) {
+      //   console.log(data);
+      // });
+      const userPortfolio = { userId: userId };
+      const stocks = {};
+      // "userPortfolio": {"userId": 1,
+      // "stocks": {"MORN":2, "FIT":10}}
+      db.Transactions.findAll({
         where: {
-          userId: userId
+          userId: userId.toString()
         }
-      }).then(function(err, result) {
-        if (err) throw err;
-        console.log(result);
-        if (numShares >= result.count) {
+      }).then(function(result, err) {
+        //console.log(result);
+        for (const key in result) {
+          const element = result[key];
+          const trans_ticker = element.dataValues.ticker;
+          const sharesTraded = element.dataValues.sharesTraded;
+          if (trans_ticker in stocks) {
+            stocks[trans_ticker] = stocks[trans_ticker] + sharesTraded;
+          } else {
+            stocks[trans_ticker] = sharesTraded;
+          }
+        }
+        userPortfolio.stocks = stocks;
+
+        const count = userPortfolio.stocks[ticker];
+
+        if (parseInt(numShares) <= count) {
           updatedFunds = currentFunds + transTotal;
           transaction = {
             companyName: companyName,
@@ -166,15 +197,11 @@ module.exports = function(app) {
             transactionPrice: transTotal
           };
           updateUser(updatedFunds); // corrected from updatedFunds(updatedFunds)
-          db.transactions
-            .create({
-              transaction
-            })
-            .then(function(result, err) {
-              if (err) throw err;
-              // console.log(result);
-              console.log("transaction was successfully recorded");
-            });
+          db.Transactions.create(transaction).then(function(result, err) {
+            if (err) throw err;
+            // console.log(result);
+            console.log("transaction was successfully recorded");
+          });
         } else {
           console.log("Insufficient shares to complete transaction");
         }

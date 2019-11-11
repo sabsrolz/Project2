@@ -5,3 +5,4 @@ USE StockDB;
 
 SELECT * FROM Users;
 SELECT * FROM Transactions;
+DELETE FROM Transactions;
