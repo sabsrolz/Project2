@@ -1,5 +1,6 @@
 var db = require("../models");
 const axios = require("axios");
+require("dotenv").config();
 // const moment = require("moment");
 console.log("api routes connected");
 
@@ -16,7 +17,8 @@ module.exports = function(app) {
     //   .format("YYYY-MM-DD HH:mm:00");
     // console.log(currentTime);
     //console.log(company);
-    const api_key = process.env; //send to env
+    const api_key = process.env.api_key; //send to env
+
     const query_ticker = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${company}&apikey=${api_key}`;
     axios
       .get(query_ticker)
@@ -25,7 +27,7 @@ module.exports = function(app) {
         // $("#stockInfoName").text("Name: " + ticker);
         //console.log(response.data["bestMatches"][0]["1. symbol"]);
         ticker = response.data["bestMatches"][0]["1. symbol"];
-        const queryURLIntraday = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${ticker}&interval=1min&apikey=8HGF9L0ALM5LPNX5`;
+        const queryURLIntraday = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${ticker}&interval=1min&apikey=${api_key}`;
         axios
           .get(queryURLIntraday)
           .then(function(response) {
@@ -183,7 +185,7 @@ module.exports = function(app) {
           const userObject = {
             id: result[user].id.toString(),
             funds: result[user].fundsAvailable,
-            portfolio: [],
+            portfolio: {},
             netWorth: result[user].fundsAvailable
           };
           usersArray.push(userObject);
