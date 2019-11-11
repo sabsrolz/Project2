@@ -30,6 +30,7 @@ module.exports = function(app) {
           .get(queryURLIntraday)
           .then(function(response) {
             // console.log(response.data["Time Series (1min)"]);
+            console.log(response);
             const timeSeries = response.data["Time Series (1min)"];
             close_minutely = Object.values(timeSeries)[0]["4. close"];
             //console.log(close_minutely);
@@ -213,6 +214,12 @@ module.exports = function(app) {
       });
     // console.log(usersArray);
     // });
+  });
+
+  app.get("/api/allUserTransactions", function(req, res) {
+    db.Transactions.findAll().then(function(result, err) {
+      res.json(result);
+    });
   });
 
   app.post("/api/allTransactions", function(req, res) {
