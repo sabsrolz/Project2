@@ -8,27 +8,44 @@ $.get("api/allUsers", function(data) {
   const usersArray = [];
   const stockData = [];
 
-  data.forEach(element => {
-    usersArray.push(element);
-  });
+  for (let i = 0; i < data.length; i++) {
+    usersArray.push(data[i]);
+  }
+
+  // data.forEach(element => {
+  //   usersArray.push(element);
+  //   // itemsProcessed++;
+  // });
 
   console.log(usersArray);
 
   $.get("/api/allUserTransactions", function(data) {
-    console.log(data);
-    data.forEach(element => {
-      if (!stockData.includes(element.companyName)) {
-        stockData.push({ companyName: element.companyName });
+    // console.log(data);
+
+    for (let i = 0; i < data.length; i++) {
+      if (!stockData.includes(data[i].companyName)) {
+        stockData.push({
+          companyName: data[i].companyName
+        });
       }
-    });
-  }).then(function() {
-    stockData.forEach(element => {
-      $.get(`/api/stock/${element.companyName}`).then(function(data) {
-        console.log(data);
-        // element.currentPrice = data[currentStockPrice];
-        // console.log(stockData);
+    }
+
+    let itemsProcessed = 0;
+    for (let i = 0; i < stockData.length; i++) {
+      $.get(`/api/stock/${stockData[i].companyName}`).then(function(data) {
+        stockData[i].currentPrice = data.currentStockPrice;
+        itemsProcessed++;
+        if (itemsProcessed === stockData.length) {
+          console.log(stockData);
+        }
       });
-    });
+    }
+
+    // data.forEach(element => {
+    //   if (!stockData.includes(element.companyName)) {
+    //     stockData.push({ companyName: element.companyName });
+    //   }
+    // });
   });
   //
 });
