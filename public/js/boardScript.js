@@ -4,17 +4,33 @@ $(".sidenav").sidenav();
 
 // Get data of users and total of asset values (probably on routing side ) // findandcountall does this for us
 
-const usersArray = [];
 $.get("api/allUsers", function(data) {
+  const usersArray = [];
+  const stockData = [];
+
   data.forEach(element => {
     usersArray.push(element);
   });
+
   console.log(usersArray);
-}).then(function() {
-  usersArray.forEach(userObject => {
-    // console.log(userObject.id);
-    $.post("/api/allTransactions", userObject);
+
+  $.get("/api/allUserTransactions", function(data) {
+    console.log(data);
+    data.forEach(element => {
+      if (!stockData.includes(element.companyName)) {
+        stockData.push({ companyName: element.companyName });
+      }
+    });
+  }).then(function() {
+    stockData.forEach(element => {
+      $.get(`/api/stock/${element.companyName}`).then(function(data) {
+        console.log(data);
+        // element.currentPrice = data[currentStockPrice];
+        // console.log(stockData);
+      });
+    });
   });
+  //
 });
 
 const rows = $("#leaderboard tbody tr").get();
@@ -38,7 +54,6 @@ rows.forEach(row => {
 });
 
 const rowranks = $("#leaderboard tbody tr").get();
-console.log(rowranks);
 rowranks.forEach(row => {
   $(row)
     .children()
