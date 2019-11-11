@@ -7,12 +7,15 @@ $("#tickerForm").on("submit", function () {
     .trim();
 
   $.ajax({
-      url: `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=${ticker}&outputsize=compact&interval=60min&apikey=L9NQIQI6RSM70ZCL`
+      url: `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${company}&apikey=${api_key}`
     })
     .then(function (data) {
       console.log(data)
       const dataPoints = [];
 
+      axios.get(`api/stock/google`).then(response => {
+        console.log(response)
+      })
       const options = {
         animationEnabled: true,
         titleFontSize: 15,
