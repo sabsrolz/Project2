@@ -57,7 +57,21 @@ module.exports = function(app) {
         console.log(err);
       });
   });
-
+  //get route to retrieve count of stocks that a user has (for sell)
+  app.get("api/portfolio/:user", function(req, res) {
+    const userPortfolio = { userId: req.params.user };
+    const stocks = {};
+    // "userPortfolio": {"userId": 1,
+    // "stocks": {"MORN":2, "FIT":10}}
+    db.Transactions.findAll({
+      where: {
+        id: userId.toString()
+      }
+    }).then(function(result, err) {
+      console.log(result);
+      res.json(result);
+    });
+  });
   //POST ROUTE when user purchases/sells # of shares at $ price
   app.post("/api/transaction/:user", function(req, res) {
     // put calls
