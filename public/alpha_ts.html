@@ -18,6 +18,7 @@
       crossorigin="anonymous"
     ></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   </head>
   <body>
     <div id="ts-output">TS OUTPUT</div>
@@ -90,12 +91,20 @@
         "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=MSFT&apikey=8HGF9L0ALM5LPNX5";
 
       searchTicker("Morningstar");
-      // $.ajax({
-      //   url: "api/test",
-      //   method: "GET"
-      // }).then(function(response) {
-      //   console.log(response);
-      // });
+      $.ajax({
+        url: "api/test",
+        method: "GET"
+      }).then(function(response) {
+        console.log(response);
+      });
+      let testObject = {
+        companyName: "Apple",
+        numShares: 2,
+        transactionType: "buy"
+      };
+      axios.post("/api/transaction/1", testObject).then(function(response) {
+        console.log(response);
+      });
     </script>
   </body>
 </html>

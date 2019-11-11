@@ -18,36 +18,43 @@ module.exports = function(app) {
     //console.log(company);
     const api_key = "L9NQIQI6RSM70ZCL"; //send to env
     const query_ticker = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${company}&apikey=${api_key}`;
-    axios.get(query_ticker).then(function(response) {
-      // this should be client side:
-      // $("#stockInfoName").text("Name: " + ticker);
-      //console.log(response.data["bestMatches"][0]["1. symbol"]);
-      ticker = response.data["bestMatches"][0]["1. symbol"];
-      const queryURLIntraday = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${ticker}&interval=1min&apikey=8HGF9L0ALM5LPNX5`;
-      axios.get(queryURLIntraday).then(function(response) {
-        // console.log(response.data["Time Series (1min)"]);
-        const timeSeries = response.data["Time Series (1min)"];
-        close_minutely = Object.values(timeSeries)[0]["4. close"];
-        //console.log(close_minutely);
+    axios
+      .get(query_ticker)
+      .then(function(response) {
+        // this should be client side:
+        // $("#stockInfoName").text("Name: " + ticker);
+        //console.log(response.data["bestMatches"][0]["1. symbol"]);
+        ticker = response.data["bestMatches"][0]["1. symbol"];
+        const queryURLIntraday = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${ticker}&interval=1min&apikey=8HGF9L0ALM5LPNX5`;
+        axios
+          .get(queryURLIntraday)
+          .then(function(response) {
+            // console.log(response.data["Time Series (1min)"]);
+            const timeSeries = response.data["Time Series (1min)"];
+            close_minutely = Object.values(timeSeries)[0]["4. close"];
+            //console.log(close_minutely);
 
-        // Sean : "I didn't realize it was multiplying by 5 woops"
-        // total_price = num_shares * parseFloat(close_minutely);
-        // console.log(total_price);
+            // Sean : "I didn't realize it was multiplying by 5 woops"
+            // total_price = num_shares * parseFloat(close_minutely);
+            // console.log(total_price);
 
-        const transaction_object = {
-          companyName: company,
-          ticker: ticker,
-          currentStockPrice: close_minutely
-        };
+            const transaction_object = {
+              companyName: company,
+              ticker: ticker,
+              currentStockPrice: close_minutely
+            };
 
-        res.json(transaction_object);
+            res.json(transaction_object);
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      })
+      .catch(err => {
+        console.log(err);
       });
-    });
   });
 
-  app.get("/api/test", function(req, res) {
-    res.send("ok");
-  });
   //POST ROUTE when user purchases/sells # of shares at $ price
   app.post("/api/transaction/:user", function(req, res) {
     // put calls
@@ -78,7 +85,6 @@ module.exports = function(app) {
 
     const numShares = req.body.numShares;
     const transactionType = req.body.transactionType;
-    const currentPrice = req.body.currentPrice;
     const companyName = req.body.companyName;
     const ticker = req.body.ticker;
     // -----------------
