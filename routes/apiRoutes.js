@@ -8,7 +8,7 @@ module.exports = function(app) {
   app.get("/api/stock/:company", function(req, res) {
     let company = req.params.company;
     let ticker;
-    let num_shares = 5;
+
     let total_price;
     // let currentTime = moment()
     //   .add(1, "hours")
@@ -18,91 +18,84 @@ module.exports = function(app) {
     //console.log(company);
     const api_key = "8HGF9L0ALM5LPNX5"; //send to env
     const query_ticker = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${company}&apikey=${api_key}`;
-    axios.get(query_ticker).then(function(response) {
-      //console.log(response.data["bestMatches"][0]["1. symbol"]);
-      ticker = response.data["bestMatches"][0]["1. symbol"];
-      const queryURLIntraday = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${ticker}&interval=1min&apikey=8HGF9L0ALM5LPNX5`;
-      axios.get(queryURLIntraday).then(function(response) {
-        //console.log(response["Time Series (1min)"]);
-        const timeSeries = response.data["Time Series (1min)"];
-        close_minutely = Object.values(timeSeries)[0]["4. close"];
-        //console.log(close_minutely);
-        total_price = num_shares * parseFloat(close_minutely);
-        console.log(total_price);
+    axios
+      .get(query_ticker)
+      .then(function(response) {
+        //console.log(response.data["bestMatches"][0]["1. symbol"]);
+        ticker = response.data["bestMatches"][0]["1. symbol"];
+        const queryURLIntraday = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${ticker}&interval=1min&apikey=8HGF9L0ALM5LPNX5`;
+        axios
+          .get(queryURLIntraday)
+          .then(function(response) {
+            //console.log(response["Time Series (1min)"]);
+            const timeSeries = response.data["Time Series (1min)"];
+            close_minutely = Object.values(timeSeries)[0]["4. close"];
+            //console.log(close_minutely);
 
-        const transaction_object = {
-          companyName: company,
-          ticker: ticker,
-          currentStockPrice: close_minutely
-        };
+            const transaction_object = {
+              companyName: company,
+              ticker: ticker,
+              currentStockPrice: close_minutely
+            };
 
-        res.json(transaction_object);
+            res.json(transaction_object);
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      })
+      .catch(err => {
+        console.log(err);
       });
-    });
   });
 
-  app.get("/api/test", function(req, res) {
-    res.send("ok");
-  });
   //POST ROUTE when user purchases/sells # of shares at $ price
   app.post("/api/transaction/:user", function(req, res) {
     //req.body = {numShares, buy/sell}
     const numShares = req.body.numShares;
     const transactionType = req.body.transactionType;
-    const currentPrice = req.body.currentPrice;
     const companyName = req.body.companyName;
-    const ticker = req.body.ticker;
     const userId = req.params.user;
-    transTotal = numShares * currentPrice;
-    let transaction;
-    let updatedFunds;
-    db.user
-      .findAll({
-        where: {
-          user: userId
-        }
-      })
-      .then(function(result, err) {
-        if (err) throw err;
-        // res.json(result);
-        // console.log(result);
-        const currentFunds = result.fundsAvailable;
-        if (transactionType === "buy") {
-          if (currentFunds >= transTotal) {
-            updatedFunds = currentFunds - transTotal;
-            updateUser(updatedFunds);
-            transaction = {
-              companyName: companyName,
-              ticker: ticker,
-              userId: userId,
-              sharesTraded: numShares,
-              transactionPrice: transTotal
-            };
-            db.transactions
-              .create({
-                transaction
-              })
-              .then(function(err, result) {
-                if (err) throw err;
-                console.log(result);
-                console.log("transaction was successfully recorded");
-              });
-          } else {
-            console.log("you dont have enough funds to complete transaction");
+    let userPortfolio = req.body.userPortfolio;
+    // const dummyportfolio = {
+    //   userid: 0,
+    //   stocks: { stock1: 6, stock2: 5, stock3: 5 }
+    // };
+    //console.log(companyName);
+    const api_key = "8HGF9L0ALM5LPNX5"; //send to env
+    const query_ticker = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${companyName}&apikey=${api_key}`;
+    axios.get(query_ticker).then(function(response) {
+      //console.log(response.data["bestMatches"][0]["1. symbol"]);
+      let ticker = response.data["bestMatches"][0]["1. symbol"];
+      const queryURLIntraday = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${ticker}&interval=1min&apikey=8HGF9L0ALM5LPNX5`;
+      axios.get(queryURLIntraday).then(function(response) {
+        //console.log(response["Time Series (1min)"]);
+        const timeSeries = response.data["Time Series (1min)"];
+        close_minutely = Object.values(timeSeries)[0]["4. close"];
+        console.log(close_minutely);
+        transTotal = numShares * close_minutely;
+        let transaction;
+        let updatedFunds;
+        db.User.findAll({
+          where: {
+            userId: userId
           }
-        } else {
-          db.transactions_table
-            .findAndCountAll({
-              include: [{ ticker: ticker }],
-              where: {
-                userId: userId
-              }
-            })
-            .then(function(err, result) {
-              if (err) throw err;
-              console.log(result);
-              if (numShares >= result.count) {
-                updatedFunds = currentFunds + transTotal;
+        })
+          .then(function(result, err) {
+            if (err) throw err;
+            console.log(result);
+            const currentFunds = parseFloat(
+              result[0].dataValues.fundsAvailable
+            );
+
+            console.log(currentFunds);
+            console.log(transTotal);
+            // console.log(currentFunds);
+            // console.log(typeof currentFunds);
+            if (transactionType === "buy") {
+              if (currentFunds >= transTotal) {
+                updatedFunds = currentFunds - transTotal;
+                updateUser(updatedFunds, userId);
                 transaction = {
                   companyName: companyName,
                   ticker: ticker,
@@ -110,34 +103,75 @@ module.exports = function(app) {
                   sharesTraded: numShares,
                   transactionPrice: transTotal
                 };
-                updatedFunds(updatedFunds);
-                db.transactions
-                  .create({
-                    transaction
-                  })
+                db.Transactions.create(transaction).then(function(err, result) {
+                  if (err) throw err;
+                  console.log(result);
+                  res.send("transaction was successfully recorded");
+                });
+              } else {
+                res.send("you dont have enough funds to complete transaction");
+              }
+            } else {
+              const count = userPortfolio.stocks[ticker];
+              console.log(count);
+              // db.Transactions.findAndCountAll({
+              //   include: [{ ticker: ticker }],
+              //   where: {
+              //     userId: userId
+              //   }
+              // })
+              //   .then(function(err, result) {
+              //     if (err) throw err;
+              //     console.log(result);
+              if (numShares <= count) {
+                updatedFunds = currentFunds + transTotal;
+                console.log(updatedFunds);
+                transaction = {
+                  companyName: companyName,
+                  ticker: ticker,
+                  userId: userId,
+                  sharesTraded: numShares,
+                  transactionPrice: transTotal
+                };
+                updateUser(updatedFunds, userId);
+                db.Transactions.create(transaction)
                   .then(function(err, result) {
                     if (err) throw err;
                     console.log(result);
-                    console.log("transaction was successfully recorded");
+                    res.send("transaction was successfully recorded");
+                  })
+                  .catch(err => {
+                    console.log(err);
                   });
               } else {
-                console.log("Insufficient shares to complete transaction");
+                res.send("Insufficient shares to complete transaction");
               }
-            });
-        }
+              // })
+              // .catch(err => {
+              //   console.log(err);
+              // });
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
       });
+    });
+  });
+  app.put(`/api/transaction/:user`, function(req, res) {
+    console.log(x);
   });
 
   //put calls
-  function updateUser(x) {
-    app.put("/api/transaction/:user", function(req, res) {
-      db.user
-        .updateOne({ fundsAvailable: x }, { userId: req.params.user })
-        .then(function(data, err) {
-          if (err) throw err;
-          console.log(data);
-          res.json(data);
-        });
+  function updateUser(x, user) {
+    console.log(db.User);
+    db.User.updateOne({ fundsAvailable: x }, { userId: user }).then(function(
+      data,
+      err
+    ) {
+      if (err) throw err;
+      console.log(data);
+      res.json(data);
     });
   }
 };
