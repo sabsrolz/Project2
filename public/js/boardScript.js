@@ -4,50 +4,51 @@ $(".sidenav").sidenav();
 
 // Get data of users and total of asset values (probably on routing side ) // findandcountall does this for us
 
-$.get("api/allUsers", function(data) {
+$.get("api/allUsers", function(userData) {
   const usersArray = [];
   const stockData = [];
 
-  for (let i = 0; i < data.length; i++) {
-    usersArray.push(data[i]);
+  for (let i = 0; i < userData.length; i++) {
+    usersArray.push(userData[i]);
   }
-
-  // data.forEach(element => {
-  //   usersArray.push(element);
-  //   // itemsProcessed++;
-  // });
 
   console.log(usersArray);
 
-  $.get("/api/allUserTransactions", function(data) {
-    // console.log(data);
+  $.get("/api/allUserTransactions", function(transactions) {
+    console.log(transactions);
 
-    for (let i = 0; i < data.length; i++) {
-      if (!stockData.includes(data[i].companyName)) {
+    for (let i = 0; i < transactions.length; i++) {
+      if (!stockData.includes(transactions[i].companyName)) {
         stockData.push({
-          companyName: data[i].companyName
+          companyName: transactions[i].companyName
         });
       }
+      usersArray[transactions[i].userId - 1].portfolio[
+        `${transactions[i].companyName}`
+      ] = 0;
+    }
+    for (let i = 0; i < transactions.length; i++) {
+      usersArray[transactions[i].userId - 1].portfolio[
+        `${transactions[i].companyName}`
+      ] += transactions[i].sharesTraded;
     }
 
     let itemsProcessed = 0;
     for (let i = 0; i < stockData.length; i++) {
-      $.get(`/api/stock/${stockData[i].companyName}`).then(function(data) {
-        stockData[i].currentPrice = data.currentStockPrice;
+      $.get(`/api/stock/${stockData[i].companyName}`).then(function(liveData) {
+        stockData[i].currentPrice = liveData.currentStockPrice;
         itemsProcessed++;
         if (itemsProcessed === stockData.length) {
           console.log(stockData);
+          for (let i = 0; i < usersArray.length; i++) {
+            //  I DON'T KNOW HOW TO DO THIS WITHOUT FOR-IN BUT IT'S ASYNC
+            // usersArray.portfolio is an object, we want
+            // foreach in portfolio usersArray.netWorth += portfolio.ELEMENT * stockData[THIS IS AN ARRAY  ヽ(  ⁰Д⁰)ﾉ ]
+          }
         }
       });
     }
-
-    // data.forEach(element => {
-    //   if (!stockData.includes(element.companyName)) {
-    //     stockData.push({ companyName: element.companyName });
-    //   }
-    // });
   });
-  //
 });
 
 const rows = $("#leaderboard tbody tr").get();
