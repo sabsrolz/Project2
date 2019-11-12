@@ -15,6 +15,7 @@ $("#loginForm").on("submit", function() {
     sessionStorage.setItem("stockAppUser", userId);
     if (sessionStorage.getItem("stockAppUser") > 0) {
       console.log("logged in!");
+      window.parent.location.href = "/top";
     } else {
       console.log("invalid credentials");
     }
@@ -38,6 +39,7 @@ $("#signupForm").on("submit", function() {
       userId = data.id;
     }
     sessionStorage.setItem("stockAppUser", userId);
+    window.parent.location.href = "/top";
   });
 });
 
