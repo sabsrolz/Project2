@@ -53,28 +53,28 @@ db.sequelize.sync(syncOptions).then(function() {
 module.exports = app;
 
 // Socket IO connection
-const server = require("http").createServer(app);
-const io = require("socket.io").listen(server);
-users = [];
-connections = [];
+// const server = require("http").createServer(app);
+// const io = require("socket.io").listen(server);
+// users = [];
+// connections = [];
 
-app.get("/", function(req, res) {
-  res.sendFile(__dirname + "/leaderboard.html");
-});
-io.sockets.on("connection", function(socket) {
-  connections.push("connecter: %s sockets connecterd", connections.lenght);
+// app.get("/", function(req, res) {
+//   res.sendFile(__dirname + "/leaderboard.html");
+// });
+// io.sockets.on("connection", function(socket) {
+//   connections.push("connecter: %s sockets connecterd", connections.lenght);
 
-  //disconect
-  socket.on("disconnect", function(data) {
-    connections.splice(connections.indexof(socket), 1);
-    console.log("disconnected %s sockets connected", connections.lenght);
-  });
-  socket.on("send message", function(data) {
-    console.log(data);
-    io.sockets.emit("new message", {
-      msg: data
-    });
-  });
-});
+//   //disconect
+//   socket.on("disconnect", function(data) {
+//     connections.splice(connections.indexof(socket), 1);
+//     console.log("disconnected %s sockets connected", connections.lenght);
+//   });
+//   socket.on("send message", function(data) {
+//     console.log(data);
+//     io.sockets.emit("new message", {
+//       msg: data
+//     });
+//   });
+// });
 
-module.exports = io;
+// module.exports = io;
