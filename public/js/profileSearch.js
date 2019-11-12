@@ -25,12 +25,14 @@ $("form").on("submit", function() {
     $.post("/api/allTransactions", data, function(transactions) {
       for (let i = 0; i < transactions.length; i++) {
         const element = transactions[i];
-
-        // console.log(element);
         portfolio[`${element.companyName}`] = 0;
+      }
+      for (let i = 0; i < transactions.length; i++) {
+        const element = transactions[i];
+
         portfolio[element.companyName] += parseInt(element.sharesTraded);
       }
-    }).then(function() {
+
       // console.log(portfolio);
       // console.log(networth);
       for (const stock in portfolio) {
@@ -45,7 +47,6 @@ $("form").on("submit", function() {
             $("#profileNetWorth").text(`Net Worth: $${networth}`);
           });
         }
-        // const element = portfolio[stock];
       }
       // MUST TOTAL NUMBER OF OWNED STOCKS INCLUDING SELL FIRST, OR WILL NOT BE ACCURATE
       // this comes later-----------------
