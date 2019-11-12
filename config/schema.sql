@@ -1,8 +1,8 @@
-DROP DATABASE IF EXISTS StockDB;
-CREATE DATABASE StockDB;
 
-USE StockDB;
+USE nrv57bnhj0lpapdo;
 
-SELECT * FROM Users;
-SELECT * FROM Transactions;
+SELECT *
+FROM Users;
+SELECT *
+FROM Transactions;
 DELETE FROM Transactions;
