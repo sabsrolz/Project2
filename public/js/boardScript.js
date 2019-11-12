@@ -12,15 +12,26 @@ $.get("api/allUsers", function(userData) {
   // console.log(usersArray);
   for (let i = 0; i < userData.length; i++) {
     usersArray.push(userData[i]);
+    usersArray[i].netWorth = parseFloat(usersArray[i].netWorth);
   }
 
   $.get("/api/allUserTransactions", function(transactions) {
     for (let i = 0; i < transactions.length; i++) {
-      if (!stockData.includes(transactions[i].companyName)) {
+      let foundStock = false;
+      for (let aeiou = 0; aeiou < stockData.length; aeiou++) {
+        if (stockData[aeiou].companyName === transactions[i].companyName) {
+          foundStock = true;
+        }
+      }
+      if (foundStock === false) {
         stockData.push({
           companyName: transactions[i].companyName
         });
       }
+      // if (!stockData.includes(transactions[i].companyName)) {
+      // this was causing a company to be added to stockdata every time
+      // please help me to stop using for loops
+      // }
       usersArray[transactions[i].userId - 1].portfolio[
         `${transactions[i].companyName}`
       ] = 0;
@@ -39,28 +50,34 @@ $.get("api/allUsers", function(userData) {
         // console.log(liveData);
         stockData[i].currentPrice = liveData.currentStockPrice;
         itemsProcessed++;
+
         if (itemsProcessed === stockData.length) {
           // console.log(stockData);
           for (let j = 0; j < usersArray.length; j++) {
+            // async function asynco() {
             for (const stock in usersArray[j].portfolio) {
-              // console.log(stock);
+              // once again, broken by async
+              // note2: this doesn't seem to by why it's borken
+              console.log(stockData);
               for (
                 let stockIndex = 0;
                 stockIndex < stockData.length;
                 stockIndex++
               ) {
+                console.log("GO!");
                 if (stockData[stockIndex].companyName === stock) {
                   // console.log(stock + stockData[stockIndex].companyName);
-                  let newTotal =
-                    parseFloat(usersArray[j].netWorth) +
-                    parseFloat(
-                      stockData[stockIndex].currentPrice *
-                        usersArray[j].portfolio[stock]
-                    );
-                  usersArray[j].netWorth = newTotal;
+                  // console.log(typeof usersArray[j].netWorth);
+
+                  usersArray[j].netWorth += parseFloat(
+                    stockData[stockIndex].currentPrice *
+                      usersArray[j].portfolio[stock]
+                  );
+                  console.log(usersArray);
                 }
               }
             }
+            // }
             // usersArray.portfolio is an object, we want
             // foreach in portfolio usersArray.netWorth += portfolio.ELEMENT * stockData[THIS IS AN ARRAY  ヽ(  ⁰Д⁰)ﾉ ]
           }
@@ -103,31 +120,3 @@ $.get("api/allUsers", function(userData) {
     }
   });
 });
-
-// const rows = $("#leaderboard tbody tr").get();
-// rows.sort(function(first, second) {
-//   let A = $(first)
-//     .children("td")
-//     .eq(3)
-//     .text()
-//     .toUpperCase();
-//   let B = $(second)
-//     .children("td")
-//     .eq(3)
-//     .text()
-//     .toUpperCase();
-//   return B - A;
-// });
-// rows.forEach(row => {
-//   $("#leaderboard")
-//     .children("tbody")
-//     .append(row);
-// });
-
-// const rowranks = $("#leaderboard tbody tr").get();
-// rowranks.forEach(row => {
-//   $(row)
-//     .children()
-//     .eq(0)
-//     .text(row.rowIndex);
-// });
