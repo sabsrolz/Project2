@@ -135,12 +135,12 @@ module.exports = function(app) {
         db.Transactions.create(transaction).then(function(result, err) {
           updateUser(updatedFunds, userId);
           if (err) throw err;
-          res.json(true);
+          res.json("success");
           // console.log("RESULT: " + result);
           // console.log("transaction was successfully recorded");
         });
       } else {
-        console.log("you dont have enough funds to complete transaction");
+        res.json("buyfail");
       }
     } else if (transactionType === "sell") {
       const userPortfolio = { userId: userId };
@@ -184,10 +184,12 @@ module.exports = function(app) {
           db.Transactions.create(transaction).then(function(result, err) {
             if (err) throw err;
             // console.log(result);
-            console.log("transaction was successfully recorded");
+            // console.log("transaction was successfully recorded");
+            res.json("success");
           });
         } else {
-          console.log("Insufficient shares to complete transaction");
+          res.json("sellfail");
+          // console.log("Insufficient shares to complete transaction");
         }
       });
     }

@@ -96,7 +96,7 @@ $("#tickerForm").on("submit", function() {
       );
     });
   }).catch(function(error) {
-    console.log("error " + error);
+    // console.log("error " + error);
   });
 });
 
@@ -122,9 +122,16 @@ function formSubmit() {
     };
     // console.log(body);
     $.post(`/api/transaction/${userData.id}`, body, function(response) {
-      if (response) {
-        console.log(response);
-        // $("#success").modal();
+      switch (response) {
+        case "success":
+          $("#success").modal("open");
+          break;
+        case "buyfail":
+          $("#buyfail").modal("open");
+          break;
+        case "sellfail":
+          $("#sellfail").modal("open");
+          break;
       }
     });
   }
