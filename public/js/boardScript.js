@@ -33,14 +33,15 @@ $.get("api/allUsers", function(userData) {
 
     let itemsProcessed = 0;
     for (let i = 0; i < stockData.length; i++) {
+      // console.log(stockData);
+      // console.log(`/api/stock/${stockData[i].companyName}`);
       $.get(`/api/stock/${stockData[i].companyName}`).then(function(liveData) {
+        // console.log(liveData);
         stockData[i].currentPrice = liveData.currentStockPrice;
         itemsProcessed++;
         if (itemsProcessed === stockData.length) {
           // console.log(stockData);
           for (let j = 0; j < usersArray.length; j++) {
-            //  I DON'T KNOW HOW TO DO THIS WITHOUT FOR-IN BUT IT'S ASYNC
-
             for (const stock in usersArray[j].portfolio) {
               // console.log(stock);
               for (
@@ -50,14 +51,12 @@ $.get("api/allUsers", function(userData) {
               ) {
                 if (stockData[stockIndex].companyName === stock) {
                   // console.log(stock + stockData[stockIndex].companyName);
-
                   let newTotal =
                     parseFloat(usersArray[j].netWorth) +
                     parseFloat(
                       stockData[stockIndex].currentPrice *
                         usersArray[j].portfolio[stock]
                     );
-
                   usersArray[j].netWorth = newTotal;
                 }
               }
@@ -73,7 +72,6 @@ $.get("api/allUsers", function(userData) {
             );
             $("#tbody").append(newRow);
           });
-
           const rows = $("#leaderboard tbody tr").get();
           rows.sort(function(first, second) {
             let A = $(first)
@@ -93,7 +91,6 @@ $.get("api/allUsers", function(userData) {
               .children("tbody")
               .append(row);
           });
-
           const rowranks = $("#leaderboard tbody tr").get();
           rowranks.forEach(row => {
             $(row)

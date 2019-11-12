@@ -10,25 +10,17 @@ module.exports = function(app) {
   const api_key = process.env.api_key; //send to env
 
   app.get("/api/stock/:company", function(req, res) {
-    let company = req.params.company;
+    let company = req.params.company.replace(".", "");
     let ticker;
-    // let num_shares = 5;
-    // let total_price;
-    // let currentTime = moment()
-    //   .add(1, "hours")
-    //   .subtract(1, "minutes")
-    //   .format("YYYY-MM-DD HH:mm:00");
-    // console.log(currentTime);
-    //console.log(company);
 
     const query_ticker = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${company}&apikey=${api_key}`;
     axios
       .get(query_ticker)
       .then(function(response) {
-        // this should be client side:
-        // $("#stockInfoName").text("Name: " + ticker);
+        // console.log(response.data["bestMatches"]);
         //console.log(response.data["bestMatches"][0]["1. symbol"]);
-        console.log(response.data["bestMatches"][0]["1. symbol"]);
+        // console.log(response.data["bestMatches"][0]["1. symbol"]);
+        console.log(response.data);
         ticker = response.data["bestMatches"][0]["1. symbol"];
 
         const company_name = response.data["bestMatches"][0]["2. name"];
@@ -36,15 +28,11 @@ module.exports = function(app) {
         axios
           .get(queryURLIntraday)
           .then(function(response) {
+            // console.log(response);
             // console.log(response.data["Time Series (1min)"]);
-            console.log(response);
             const timeSeries = response.data["Time Series (1min)"];
             close_minutely = Object.values(timeSeries)[0]["4. close"];
-            console.log(close_minutely);
-
-            // Sean : "I didn't realize it was multiplying by 5 woops"
-            // total_price = num_shares * parseFloat(close_minutely);
-            // console.log(total_price);
+            // console.log(close_minutely);
 
             const transaction_object = {
               companyName: company_name,
@@ -226,32 +214,9 @@ module.exports = function(app) {
         }
       })
 
-      // NOTE : cascading .thens are causing problems
-
-      // .then(function() {
-      //   usersArray.forEach(object => {
-      //     db.Transactions.findAll({
-      //       where: {
-      //         userId: object.id
-      //       }
-      //     })
-      // .then(function(data) {
-      //   if (data[0]) {
-      //     for (const key in data[0].dataValues) {
-      //       object.portfolio.push(data[0].dataValues[key]);
-      //     }
-      //   }
-      //   // data.forEach(element => {
-      //   // console.log(element[0]);
-      //   // object.portfolio.push(element[0]);
-      //   // });
-      // })
-      // });
       .then(function() {
         res.json(usersArray);
       });
-    // console.log(usersArray);
-    // });
   });
 
   app.get("/api/allUserTransactions", function(req, res) {
