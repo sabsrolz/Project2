@@ -1,4 +1,5 @@
 $(".sidenav").sidenav();
+$(".modal").modal();
 
 $("#loginForm").on("submit", function() {
   event.preventDefault();
@@ -9,16 +10,22 @@ $("#loginForm").on("submit", function() {
   };
   let userId = -1;
   $.post("/api/user/loginid", login, function(data) {
-    if (data.id) {
-      userId = data.id;
-    }
-    sessionStorage.setItem("stockAppUser", userId);
-    if (sessionStorage.getItem("stockAppUser") > 0) {
-      console.log("logged in!");
+    if (data === null) {
+      $("#failedLog").modal("open");
     } else {
-      console.log("invalid credentials");
+      if (data.id) {
+        userId = data.id;
+      }
+      sessionStorage.setItem("stockAppUser", userId);
+      if (sessionStorage.getItem("stockAppUser") > 0) {
+        $("#loggedIn").modal("open");
+      }
     }
   });
+});
+
+$(document).on("click", "#toLeaderBoard", function() {
+  window.location.href = "/top";
 });
 
 $("#signupForm").on("submit", function() {
