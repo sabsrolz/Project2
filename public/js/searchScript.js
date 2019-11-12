@@ -121,9 +121,11 @@ function formSubmit() {
       fundsAvailable: userData.fundsAvailable
     };
     // console.log(body);
-    $.post(`/api/transaction/${userData.id}`, body, function() {
-      // console.log(data);
-      // location.reload();
+    $.post(`/api/transaction/${userData.id}`, body, function(response) {
+      if (response) {
+        console.log(response);
+        // $("#success").modal();
+      }
     });
   }
 }
