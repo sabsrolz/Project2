@@ -7,6 +7,7 @@ console.log("api routes connected");
 
 module.exports = function(app) {
   //GET Route that will display current price of stock to user
+  const api_key = process.env.api_key; //send to env
 
   app.get("/api/stock/:company", function(req, res) {
     let company = req.params.company;
@@ -19,7 +20,6 @@ module.exports = function(app) {
     //   .format("YYYY-MM-DD HH:mm:00");
     // console.log(currentTime);
     //console.log(company);
-    const api_key = process.env.api_key; //send to env
 
     const query_ticker = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${company}&apikey=${api_key}`;
     axios
@@ -28,7 +28,9 @@ module.exports = function(app) {
         // this should be client side:
         // $("#stockInfoName").text("Name: " + ticker);
         //console.log(response.data["bestMatches"][0]["1. symbol"]);
+        console.log(response.data["bestMatches"][0]["1. symbol"]);
         ticker = response.data["bestMatches"][0]["1. symbol"];
+
         const company_name = response.data["bestMatches"][0]["2. name"];
         const queryURLIntraday = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${ticker}&interval=1min&apikey=${api_key}`;
         axios
@@ -88,58 +90,48 @@ module.exports = function(app) {
       res.json(userPortfolio);
     });
   });
+  // put calls
+  function updateUser(newfunds, targetUserId) {
+    // console.log("updating funds...");
+    // console.log(newfunds);
+    // console.log(typeof targetUserId);
+    // app.put("/api/transaction/", function(req, res) { // THIS DOES NOT ACTUALLY RUN A QUERY <-----
+    console.log("newfunds" + newfunds);
+    db.User.update(
+      {
+        fundsAvailable: newfunds
+      },
+      {
+        where: {
+          id: parseInt(targetUserId)
+        }
+      }
+    ).then(function(data, err) {
+      if (err) console.log("error" + err);
+      // console.log("updated fundsAvailable");
+      // console.log(data);
+      // if (data) console.log(data);
+      // res.json(data);
+    });
+    // });
+  }
+
   //POST ROUTE when user purchases/sells # of shares at $ price
   app.post("/api/transaction/:user", function(req, res) {
-    // put calls
-    function updateUser(newfunds, targetUserId) {
-      // console.log("updating funds...");
-      // console.log(newfunds);
-      // console.log(typeof targetUserId);
-      // app.put("/api/transaction/", function(req, res) { // THIS DOES NOT ACTUALLY RUN A QUERY <-----
-      db.User.update(
-        {
-          fundsAvailable: newfunds
-        },
-        {
-          where: {
-            id: parseInt(targetUserId)
-          }
-        }
-      ).then(function(data, err) {
-        if (err) console.log("error" + err);
-        // console.log("updated fundsAvailable");
-        // console.log(data);
-        // if (data) console.log(data);
-        // res.json(data);
-      });
-      // });
-    }
     //req.body = all of this stuff here ------
-
     const numShares = req.body.numShares;
     const transactionType = req.body.transactionType;
+    const currentPrice = req.body.currentPrice;
     const companyName = req.body.companyName;
     const ticker = req.body.ticker;
-    const currentPrice = req.body.currentPrice;
+    const currentFunds = req.body.fundsAvailable;
     // -----------------
 
     const userId = req.params.user;
     const transTotal = numShares * currentPrice;
-    const currentFunds = req.body.fundsAvailable;
 
     let transaction;
     let updatedFunds;
-
-    // this is already available, don't query
-    // db.User.findAll({
-    //   where: {
-    //     id: userId
-    //   }
-    // }).then(function(result, err) {
-    //   if (err) throw err;
-    // res.json(result);
-    // console.log(result);
-    // console.log(currentFunds);
 
     if (transactionType === "buy") {
       if (currentFunds >= transTotal) {
@@ -162,15 +154,10 @@ module.exports = function(app) {
         console.log("you dont have enough funds to complete transaction");
       }
     } else if (transactionType === "sell") {
-      // $.get(`api/portfolio/${sessionStorage.get("stockAppUser")}`, function(
-      //   data
-      // ) {
-      //   console.log(data);
-      // });
       const userPortfolio = { userId: userId };
       const stocks = {};
-      // "userPortfolio": {"userId": 1,
-      // "stocks": {"MORN":2, "FIT":10}}
+      // "userPortfolio": {"userId": 1},
+      // "stocks": {"MORN": 2 , "FIT" : 10 }
       db.Transactions.findAll({
         where: {
           userId: userId.toString()
@@ -179,6 +166,7 @@ module.exports = function(app) {
         //console.log(result);
         for (const key in result) {
           const element = result[key];
+          console.log(element);
           const trans_ticker = element.dataValues.ticker;
           const sharesTraded = element.dataValues.sharesTraded;
           if (trans_ticker in stocks) {
@@ -191,8 +179,10 @@ module.exports = function(app) {
 
         const count = userPortfolio.stocks[ticker];
 
+        console.log(userPortfolio);
         if (parseInt(numShares) <= count) {
-          updatedFunds = currentFunds + transTotal;
+          updatedFunds = parseFloat(currentFunds) + parseFloat(transTotal);
+          console.log("updated funds: " + updatedFunds);
           transaction = {
             companyName: companyName,
             ticker: ticker,
@@ -334,13 +324,14 @@ module.exports = function(app) {
       });
     });
   });
+
+  app.get("/api/monthly/:stockTicker", function(req, res) {
+    axios
+      .get(
+        `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=${req.params.stockTicker}&outputsize=compact&interval=60min&apikey=${api_key}`
+      )
+      .then(function(response) {
+        res.json(response.data);
+      });
+  });
 };
-
-//hn_YvbyFGxzX8BoATAmf
-//0ebb6649b6ff470299dc8fa3faed3116 (news)
-//https://newsapi.org/v2/top-headlines?q=microsoft&apiKey=0ebb6649b6ff470299dc8fa3faed3116
-
-//standard deviation - volatility
-//1, 3, 5, 10 yrs
-//sharpe ratio
-//max drawdown

@@ -35,21 +35,26 @@ $("#tickerForm").on("submit", function() {
     $("#stockInfo").data("name", data.companyName);
     $("#stockInfo").data("ticker", data.ticker);
     $("#stockInfo").data("price", data.currentStockPrice);
-    // console.log(data);
 
     // following section for CHART only:
-    const tickerData = $("#stockInfo").data();
-    // console.log(tickerData.ticker);
-    // console.log(tickerData.price);
-    $.ajax({
-      url: `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=${tickerData.ticker}&outputsize=compact&interval=60min&apikey=L9NQIQI6RSM70ZCL`
-    }).then(function(data) {
-      // console.log(data);
+
+    $.get(`/api/monthly/${data.ticker}`).then(function(chartData) {
       const dataPoints = [];
 
-      // axios.get(`api/stock/google`).then(response => {
-      //   console.log(response);
-      // });
+      for (
+        let i = 0;
+        i < Object.keys(chartData["Monthly Time Series"]).length;
+        i++
+      ) {
+        const element = Object.keys(chartData["Monthly Time Series"])[i];
+
+        dataPoints.push({
+          x: new Date(element),
+          y: parseFloat(chartData["Monthly Time Series"][element]["4. close"])
+        });
+      }
+
+      // console.log(dataPoints);
       const options = {
         animationEnabled: true,
         titleFontSize: 15,
@@ -73,15 +78,7 @@ $("#tickerForm").on("submit", function() {
         ]
       };
 
-      for (const element in data["Monthly Time Series"]) {
-        // console.log(data["Monthly Time Series"][element]["4. close"]);
-        dataPoints.push({
-          x: new Date(element),
-          y: parseFloat(data["Monthly Time Series"][element]["4. close"])
-        });
-      }
       if (dataPoints.length > 0) {
-        // console.log(dataPoints);
         $("#chartContainer").removeClass("hide");
         $("#chartContainer").CanvasJSChart(options);
       }
@@ -99,7 +96,7 @@ $("#tickerForm").on("submit", function() {
       );
     });
   }).catch(function(error) {
-    console.log(error);
+    console.log("error " + error);
   });
 });
 
@@ -124,7 +121,7 @@ function formSubmit() {
       fundsAvailable: userData.fundsAvailable
     };
     // console.log(body);
-    $.post(`/api/transaction/${userData.id}`, body, function(data) {
+    $.post(`/api/transaction/${userData.id}`, body, function() {
       // console.log(data);
       // location.reload();
     });
