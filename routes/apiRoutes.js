@@ -29,7 +29,6 @@ module.exports = function(app) {
         //console.log(response.data["bestMatches"][0]["1. symbol"]);
         ticker = response.data["bestMatches"][0]["1. symbol"];
         const company_name = response.data["bestMatches"][0]["2. name"];
-
         const queryURLIntraday = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${ticker}&interval=1min&apikey=${api_key}`;
         axios
           .get(queryURLIntraday)
