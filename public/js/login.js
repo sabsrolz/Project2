@@ -45,6 +45,7 @@ $("#signupForm").on("submit", function() {
       userId = data.id;
     }
     sessionStorage.setItem("stockAppUser", userId);
+    $("#loggedIn").modal("open");
   });
 });
 
