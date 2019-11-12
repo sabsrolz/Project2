@@ -32,32 +32,26 @@ $("form").on("submit", function() {
 
         portfolio[element.companyName] += parseInt(element.sharesTraded);
       }
-
-      // console.log(portfolio);
-      // console.log(networth);
-      for (const stock in portfolio) {
-        // console.log(stock);
-        if (portfolio[stock] != 0) {
-          $.get(`/api/stock/${stock}`, function(data) {
-            console.log(data.currentStockPrice);
-            $("#tbody").append(
-              `<tr><td>${stock}</td><td>${portfolio[stock]}</td><td>$${data.currentStockPrice}</td></tr>`
-            );
-            networth += data.currentStockPrice * portfolio[stock];
-            $("#profileNetWorth").text(`Net Worth: $${networth}`);
-          });
+      if (Object.keys(portfolio).length !== 0) {
+        // console.log(portfolio);
+        // console.log(networth);
+        for (const stock in portfolio) {
+          if (portfolio[stock] != 0) {
+            $.get(`/api/stock/${stock}`, function(data) {
+              // console.log(data.currentStockPrice);
+              $("#tbody").append(
+                `<tr><td>${stock}</td><td>${portfolio[stock]}</td><td>$${data.currentStockPrice}</td></tr>`
+              );
+              networth += data.currentStockPrice * portfolio[stock];
+              $("#profileNetWorth").text(`Net Worth: $${networth}`);
+            });
+          }
         }
+      } else {
+        $("#profileNetWorth").text(`Net Worth: $${networth}`);
       }
-      // MUST TOTAL NUMBER OF OWNED STOCKS INCLUDING SELL FIRST, OR WILL NOT BE ACCURATE
-      // this comes later-----------------
-      // ---------------------------
     });
   });
-
-  // findall transactions by id for portfolio
-  // api all stocks owned by user and total with funds for net worth
-
-  // display on page
 
   $("#profileInfo").removeClass("hide");
 });
