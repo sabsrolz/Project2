@@ -67,7 +67,7 @@ $.get("api/allUsers", function(userData) {
           }
           usersArray.forEach(element => {
             const newRow = $(
-              `<tr><td>${0}</td><td>${element.firstName} ${
+              `<tr class="hoverable"><td>${0}</td><td>${element.firstName} ${
                 element.lastName
               }</td><td>${element.funds}</td><td>${element.netWorth}</td></tr>`
             );
@@ -107,30 +107,30 @@ $.get("api/allUsers", function(userData) {
   });
 });
 
-const rows = $("#leaderboard tbody tr").get();
-rows.sort(function(first, second) {
-  let A = $(first)
-    .children("td")
-    .eq(3)
-    .text()
-    .toUpperCase();
-  let B = $(second)
-    .children("td")
-    .eq(3)
-    .text()
-    .toUpperCase();
-  return B - A;
-});
-rows.forEach(row => {
-  $("#leaderboard")
-    .children("tbody")
-    .append(row);
-});
+// const rows = $("#leaderboard tbody tr").get();
+// rows.sort(function(first, second) {
+//   let A = $(first)
+//     .children("td")
+//     .eq(3)
+//     .text()
+//     .toUpperCase();
+//   let B = $(second)
+//     .children("td")
+//     .eq(3)
+//     .text()
+//     .toUpperCase();
+//   return B - A;
+// });
+// rows.forEach(row => {
+//   $("#leaderboard")
+//     .children("tbody")
+//     .append(row);
+// });
 
-const rowranks = $("#leaderboard tbody tr").get();
-rowranks.forEach(row => {
-  $(row)
-    .children()
-    .eq(0)
-    .text(row.rowIndex);
-});
+// const rowranks = $("#leaderboard tbody tr").get();
+// rowranks.forEach(row => {
+//   $(row)
+//     .children()
+//     .eq(0)
+//     .text(row.rowIndex);
+// });
