@@ -1,0 +1,14 @@
+body {
+  font-family: "Times New Roman", Times, serif;
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+main {
+  flex: 1 0 auto;
+}
+
+/* #messageArea {
+  display: none;
+} */
