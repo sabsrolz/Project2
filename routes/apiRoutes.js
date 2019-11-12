@@ -20,7 +20,7 @@ module.exports = function(app) {
         // console.log(response.data["bestMatches"]);
         //console.log(response.data["bestMatches"][0]["1. symbol"]);
         // console.log(response.data["bestMatches"][0]["1. symbol"]);
-        console.log(response.data);
+        // console.log(response.data);
         ticker = response.data["bestMatches"][0]["1. symbol"];
 
         const company_name = response.data["bestMatches"][0]["2. name"];
@@ -135,8 +135,9 @@ module.exports = function(app) {
         db.Transactions.create(transaction).then(function(result, err) {
           updateUser(updatedFunds, userId);
           if (err) throw err;
+          res.json(true);
           // console.log("RESULT: " + result);
-          console.log("transaction was successfully recorded");
+          // console.log("transaction was successfully recorded");
         });
       } else {
         console.log("you dont have enough funds to complete transaction");
@@ -144,6 +145,7 @@ module.exports = function(app) {
     } else if (transactionType === "sell") {
       const userPortfolio = { userId: userId };
       const stocks = {};
+      console.log(userPortfolio);
       // "userPortfolio": {"userId": 1},
       // "stocks": {"MORN": 2 , "FIT" : 10 }
       db.Transactions.findAll({
