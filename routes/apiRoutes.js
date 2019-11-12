@@ -200,7 +200,7 @@ module.exports = function(app) {
             sharesTraded: 0 - numShares,
             transactionPrice: transTotal
           };
-          updateUser(updatedFunds); // corrected from updatedFunds(updatedFunds)
+          updateUser(updatedFunds, userId); // corrected from updatedFunds(updatedFunds)
           db.Transactions.create(transaction).then(function(result, err) {
             if (err) throw err;
             // console.log(result);
