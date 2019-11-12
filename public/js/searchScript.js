@@ -14,6 +14,11 @@ if (sessionStorage.getItem("stockAppUser") > 0) {
     // console.log(data);
     userData = data;
   });
+} else {
+  $("#modal-login").modal("open");
+  $("#toLogin").on("click", function() {
+    window.location.href = "/";
+  });
 }
 
 $("#tickerForm").on("submit", function() {
@@ -122,9 +127,7 @@ function formSubmit() {
     // console.log(body);
     $.post(`/api/transaction/${userData.id}`, body, function(data) {
       // console.log(data);
-      location.reload();
+      // location.reload();
     });
-  } else {
-    alert("You are not logged in!");
   }
 }

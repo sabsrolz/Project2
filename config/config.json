@@ -1,10 +1,11 @@
 {
   "development": {
-    "username": "root",
-    "password": "Coquisolz18",
-    "database": "stockDB",
-    "host": "localhost",
-    "dialect": "mysql"
+    "username": "dgkfazs2cjiwgxgy",
+    "password": "pde0xdloqvwhbgyb",
+    "database": "nrv57bnhj0lpapdo",
+    "host": "lolyz0ok3stvj6f0.cbetxkdyhwsb.us-east-1.rds.amazonaws.com",
+    "dialect": "mysql",
+    "port": 3306
   },
   "test": {
     "username": "root",
