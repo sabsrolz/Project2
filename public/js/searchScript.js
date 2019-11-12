@@ -1,8 +1,10 @@
 $(".sidenav").sidenav();
 $("select").formSelect();
 $(".modal").modal();
+// require("dotenv").config();
+// const api_key = process.env.api_key;
 
-$.get("/api/");
+// $.get("/api/");
 
 // gets user data on load
 let userData;
@@ -13,6 +15,7 @@ if (sessionStorage.getItem("stockAppUser") > 0) {
   $.post("api/user/idcheck", userId, function(data) {
     // console.log(data);
     userData = data;
+    console.log(data);
   });
 }
 
@@ -22,13 +25,6 @@ $("#tickerForm").on("submit", function() {
     .val()
     .trim();
 
-<<<<<<< HEAD
-  $.ajax({
-      url: `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${company}&apikey=${api_key}`
-    })
-    .then(function (data) {
-      console.log(data)
-=======
   // fill card with display info, and data for post use
   $.get(`/api/stock/${company}`, function(data) {
     $("#stockInfoName").text("Name: " + data.companyName);
@@ -48,12 +44,11 @@ $("#tickerForm").on("submit", function() {
       url: `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=${tickerData.ticker}&outputsize=compact&interval=60min&apikey=L9NQIQI6RSM70ZCL`
     }).then(function(data) {
       // console.log(data);
->>>>>>> 91287e7777a404f30b74f122a71c9f71c5e0c54a
       const dataPoints = [];
 
-      axios.get(`api/stock/google`).then(response => {
-        console.log(response)
-      })
+      // axios.get(`api/stock/google`).then(response => {
+      //   console.log(response);
+      // });
       const options = {
         animationEnabled: true,
         titleFontSize: 15,
@@ -114,7 +109,7 @@ $("#confirmSubmit").on("click", function() {
 });
 
 function formSubmit() {
-  if (userData) {
+  if (userData.id) {
     // console.log(userData);
     // userid in sessionstorage
     const tickerData = $("#stockInfo").data();
@@ -130,7 +125,9 @@ function formSubmit() {
     // console.log(body);
     $.post(`/api/transaction/${userData.id}`, body, function(data) {
       // console.log(data);
-      location.reload();
+      // location.reload();
+
+      $(".modal-trans").modal("open");
     });
   } else {
     alert("You are not logged in!");
