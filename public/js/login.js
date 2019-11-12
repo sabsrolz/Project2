@@ -40,7 +40,7 @@ $("#signupForm").on("submit", function() {
 
   $.post("/api/user", newUser, function(data) {
     // sign up conversation here
-    console.log(data);
+    // console.log(data);
     if (data.id) {
       userId = data.id;
     }

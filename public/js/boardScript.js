@@ -58,13 +58,13 @@ $.get("api/allUsers", function(userData) {
             for (const stock in usersArray[j].portfolio) {
               // once again, broken by async
               // note2: this doesn't seem to by why it's borken
-              console.log(stockData);
+              // console.log(stockData);
               for (
                 let stockIndex = 0;
                 stockIndex < stockData.length;
                 stockIndex++
               ) {
-                console.log("GO!");
+                // console.log("GO!");
                 if (stockData[stockIndex].companyName === stock) {
                   // console.log(stock + stockData[stockIndex].companyName);
                   // console.log(typeof usersArray[j].netWorth);
@@ -73,7 +73,7 @@ $.get("api/allUsers", function(userData) {
                     stockData[stockIndex].currentPrice *
                       usersArray[j].portfolio[stock]
                   );
-                  console.log(usersArray);
+                  // console.log(usersArray);
                 }
               }
             }
