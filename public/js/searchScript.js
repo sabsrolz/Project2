@@ -88,7 +88,7 @@ $("#tickerForm").on("submit", function() {
     });
     $("#transactionSubmitBtn").on("click", function() {
       event.preventDefault();
-      $(".modal").modal("open");
+      $("#modal").modal("open");
       $("#transactionConfirmName").text(data.companyName);
       $("#transactionConfirmNumber").text($("#transactionAmount").val());
       $("#transactionConfirmType").text($("#transactionType").val());
