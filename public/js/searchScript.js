@@ -11,7 +11,7 @@ if (sessionStorage.getItem("stockAppUser") > 0) {
   $.post("api/user/idcheck", userId, function(data) {
     // console.log(data);
     userData = data;
-    console.log(data);
+    // console.log(data);
   });
 } else {
   $("#modal-login").modal("open");
