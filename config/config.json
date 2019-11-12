@@ -1,7 +1,7 @@
 {
   "development": {
     "username": "root",
-    "password": "Coquisolz18",
+    "password": "Password",
     "database": "stockDB",
     "host": "localhost",
     "dialect": "mysql"
