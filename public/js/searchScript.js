@@ -1,10 +1,6 @@
 $(".sidenav").sidenav();
 $("select").formSelect();
 $(".modal").modal();
-// require("dotenv").config();
-// const api_key = process.env.api_key;
-
-// $.get("/api/");
 
 // gets user data on load
 let userData;
