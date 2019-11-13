@@ -18,6 +18,14 @@ module.exports = function(app) {
     res.sendFile(path.join(`${__dirname}/../public/profile.html`));
   });
 
+  app.get("/signup", function(req, res) {
+    res.sendFile(path.join(`${__dirname}/../public/signup.html`));
+  });
+
+  app.get("/login", function(req, res) {
+    res.sendFile(path.join(`${__dirname}/../public/signin.html`));
+  });
+
   // Render 404 page for any unmatched routes
   // app.get("*", function(req, res) {
   //   res.json(404);
